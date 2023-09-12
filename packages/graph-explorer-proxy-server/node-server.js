@@ -15,6 +15,12 @@ const aws4 = require("aws4");
 
 // Load environment variables from .env file.
 dotenv.config({ path: "../graph-explorer/.env" });
+const milis = 5 * 60 * 1000;
+// convert milis to miliseconds
+const 
+
+const proxyTimeout = process.env.PROXY_REQUEST_TIMEOUT || 5 * 60 * 1000; // 5 minutes in milliseconds
+const refetchMaxRetries = process.env.PROXY_MAX_RETRIES || 1;
 
 // Create a logger instance with pino.
 const proxyLogger = pino({
@@ -174,8 +180,64 @@ async function fetchData(res, next, url, options, isIamEnabled, region) {
     };
     const isIamEnabled = !!req.headers["aws-neptune-region"];
     const region = isIamEnabled ? req.headers["aws-neptune-region"] : "";
+  }); 
+  
+  const retryFetch = async (url, headers, retryDelay = 10000) => {
+    // remove the existing host headers, we want ensure that we are passing the DB endpoint hostname.
+    delete headers["host"];
+    if (headers["aws-neptune-region"]) {
+      data = await getIAMHeaders({
+        host: url.hostname,
+        port: url.port,
+        path: url.pathname + url.search,
+        service: "neptune-db",
+        region: headers["aws-neptune-region"],
+      });
+      headers = { ...headers, ...data };
+    }
+    for (let i = 0; i < refetchMaxRetries; i++) {
+      try {
+        proxyLogger.debug("Fetching: " + url.href);
+        const res = await fetch(url.href, {
+          headers: headers,
+          signal: AbortSignal.timeout(proxyTimeout - 1000), // timing out the request before the proxy timeout
+        });
+        if (!res.ok) {
+          const result = await res.json();
+          proxyLogger.error("!!Request failure!!");
+          proxyLogger.error("URL: " + url.href);
+          throw new Error("\n" + JSON.stringify(result, null, 2));
+        } else {
+          proxyLogger.debug("Successful response: " + res.statusText);
+          return res;
+        }
+      } catch (err) {
+        if (i === refetchMaxRetries - 1) {
+          proxyLogger.error("!!Proxy Retry Fetch Reached Maximum Tries!!");
+          throw err;
+        } else {
+          proxyLogger.debug("Proxy Retry Fetch Count::: " + i);
+          await new Promise((resolve) => setTimeout(resolve, retryDelay));
+        }
+      }
+    }
+  };
 
-    fetchData(res, next, rawUrl, requestOptions, isIamEnabled, region);
+  app.get("/sparql", async (req, res, next) => {
+    try {
+      const response = await retryFetch(
+        new URL(
+          `${req.headers["graph-db-connection-url"]}/sparql?query=` +
+            encodeURIComponent(req.query.query) +
+            "&format=json"
+        ),
+        req.headers
+      );
+      const data = await response.json();
+      res.send(data);
+    } catch (error) {
+      next(error);
+    }
   });
 
   // POST endpoint for Gremlin queries.
@@ -248,9 +310,10 @@ async function fetchData(res, next, url, options, isIamEnabled, region) {
     fetchData(res, next, rawUrl, requestOptions, isIamEnabled, region);
   });
 
-  app.get("/logger", (req, res, next) => {
+  app.get("/logger", (req, res) => {
     let message;
     let level;
+
     try {
       if (req.headers["level"] === undefined) {
         throw new Error("No log level passed.");
@@ -279,8 +342,11 @@ async function fetchData(res, next, url, options, isIamEnabled, region) {
     } catch (error) {
       next(error);
     }
-  });
+});
+
   app.use(errorHandler);
+  app.timeout = proxyTimeout; // Express default is 120000 (2 minutes)
+
   // Start the server on port 80 or 443 (if HTTPS is enabled)
   if (process.env.NEPTUNE_NOTEBOOK === "true") {
     app.listen(9250, async () => {
