@@ -15,9 +15,6 @@ const aws4 = require("aws4");
 
 // Load environment variables from .env file.
 dotenv.config({ path: "../graph-explorer/.env" });
-const milis = 5 * 60 * 1000;
-// convert milis to miliseconds
-const 
 
 const proxyTimeout = process.env.PROXY_REQUEST_TIMEOUT || 5 * 60 * 1000; // 5 minutes in milliseconds
 const refetchMaxRetries = process.env.PROXY_MAX_RETRIES || 1;
@@ -200,7 +197,7 @@ async function fetchData(res, next, url, options, isIamEnabled, region) {
         proxyLogger.debug("Fetching: " + url.href);
         const res = await fetch(url.href, {
           headers: headers,
-          signal: AbortSignal.timeout(proxyTimeout - 1000), // timing out the request before the proxy timeout
+          timeout: proxyTimeout - 1000,
         });
         if (!res.ok) {
           const result = await res.json();
