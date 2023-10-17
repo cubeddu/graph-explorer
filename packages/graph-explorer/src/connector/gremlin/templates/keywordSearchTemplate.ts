@@ -24,7 +24,7 @@ const keywordSearchTemplate = ({
   vertexTypes = [],
   searchById = true,
   searchByAttributes = [],
-  limit = 10,
+  limit = 100,
   offset = 0,
   exactMatch = false,
 }: KeywordSearchRequest): string => {
@@ -40,13 +40,13 @@ const keywordSearchTemplate = ({
 
   if (Boolean(searchTerm) && (searchByAttributes.length !== 0 || searchById)) {
     const orContent = uniq(
-        (searchById && searchByAttributes.includes("__all")) ? ["_id", ...searchByAttributes] : searchByAttributes
+      (searchById && searchByAttributes.includes("__all")) ? ["_id", ...searchByAttributes] : searchByAttributes
     )
       .filter(attr => attr !== "__all")
       .map(attr => {
         if (attr === "_id") {
           if (exactMatch === true) {
-             return `has(id,"${searchTerm}")`;
+            return `has(id,"${searchTerm}")`;
           }
           return `has(id,containing("${searchTerm}"))`;
         }

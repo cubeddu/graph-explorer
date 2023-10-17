@@ -5,19 +5,19 @@
  * @see oneHopNeighborsTemplate
  */
 const blankNodeOneHopNeighborsTemplate = (subQuery: string) => {
-  return `
-		SELECT ?bNode ?subject ?pred ?value ?subjectClass ?pToSubject ?pFromSubject {
-			?subject a     ?subjectClass ;
-							 ?pred ?value .
-			{
-				SELECT DISTINCT ?bNode ?subject ?pToSubject ?pFromSubject {
-					{ ?bNode ?pToSubject ?subject }
-					UNION
-					{ ?subject ?subjectClass ?bNode }
-					{ ${subQuery} }
-				}
-			}
+	return `
+		SELECT ?bNode ?subject ?pred ?value ?subjectClass ?pToSubject ?pFromSubject
+		WHERE {
+			?subject a ?subjectClass;
+					?pred ?value.
 			FILTER(isLiteral(?value))
+
+			{
+				{ ?bNode ?pToSubject ?subject }
+				UNION
+				{ ?subject ?pFromSubject ?bNode }
+				${subQuery}
+			}
 		}
   `;
 };

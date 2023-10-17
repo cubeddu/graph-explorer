@@ -40,23 +40,22 @@ const keywordSearchTemplate = ({
   searchTerm,
   subjectClasses = [],
   predicates = [],
-  limit = 10,
+  limit = 100,
   offset = 0,
 }: SPARQLKeywordSearchRequest): string => {
   return `
-    SELECT ?subject ?pred ?value ?class {
-      ?subject ?pred ?value {
-        SELECT DISTINCT ?subject ?class {
-            ?subject a          ?class ;
-                     ?predicate ?value .
-            ${getFilterPredicates(predicates)}
-            ${getSubjectClasses(subjectClasses)}
-            ${getFilterObject(searchTerm)}
-        }
-        ${limit > 0 ? `LIMIT ${limit} OFFSET ${offset}` : ""}
-      }
+    SELECT ?subject ?pred ?value ?class
+    WHERE {
+      ?subject a ?class;
+            ?predicate ?value.
+      ${getFilterPredicates(predicates)}
+      ${getSubjectClasses(subjectClasses)}
+      ${getFilterObject(searchTerm)}
+
+      ?subject ?pred ?value.
       FILTER(isLiteral(?value))
     }
+    ${limit > 0 ? `LIMIT ${limit} OFFSET ${offset}` : ""}
   `;
 };
 

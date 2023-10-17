@@ -57,31 +57,33 @@ const oneHopNeighborsTemplate = ({
   limit = 0,
   offset = 0,
 }: SPARQLNeighborsRequest): string => {
+  console.log("🚀 ~ file: oneHopNeighborsTemplate.ts:60 ~ oneHopNeighborsTemplate:", oneHopNeighborsTemplate)
+
   return `
-    SELECT ?subject ?pred ?value ?subjectClass ?pToSubject ?pFromSubject {
-      ?subject a     ?subjectClass;
-               ?pred ?value {
-        SELECT DISTINCT ?subject ?pToSubject ?pFromSubject {
-          BIND(<${resourceURI}> AS ?argument)
+     SELECT ?subject ?pred ?value ?subjectClass ?pToSubject ?pFromSubject
+      WHERE {
+        BIND(<${resourceURI}> AS ?argument)
+
+        ?subject ?pred ?value.
+        FILTER(isLiteral(?value))
+
+        {
+          ?argument ?pToSubject ?subject.
+          ?subject a ?subjectClass;
+                  ?sPred ?sValue.
           ${getSubjectClasses(subjectClasses)}
-          {
-            ?argument ?pToSubject ?subject.
-            ?subject a         ?subjectClass;
-                     ?sPred    ?sValue .
-            ${getFilters(filterCriteria)}
-          }
-          UNION
-          {
-            ?subject ?pFromSubject ?argument;
-                     a         ?subjectClass;
-                     ?sPred    ?sValue .
-           ${getFilters(filterCriteria)}
-          }
+          ${getFilters(filterCriteria)}
         }
-        ${getLimit(limit, offset)}
+        UNION
+        {
+          ?subject ?pFromSubject ?argument.
+          ?subject a ?subjectClass;
+                  ?sPred ?sValue.
+          ${getSubjectClasses(subjectClasses)}
+          ${getFilters(filterCriteria)}
+        }
       }
-      FILTER(isLiteral(?value))
-    }
+      ${getLimit(limit, offset)}
   `;
 };
 

@@ -23,18 +23,17 @@ const neighborsCountTemplate = ({
   limit = 0,
 }: SPARQLNeighborsCountRequest) => {
   return `
-    SELECT ?class (COUNT(?class) AS ?count) {
-      ?subject a ?class {
-        SELECT DISTINCT ?subject ?class {
-          ?subject a ?class .
-          { ?subject ?p <${resourceURI}> }
-          UNION
-          { <${resourceURI}> ?p ?subject }
-        }
-        ${limit > 0 ? `LIMIT ${limit}` : ""}
+    SELECT ?class (COUNT(DISTINCT ?subject) AS ?count)
+    WHERE {
+      ?subject a ?class .
+      {
+        { ?subject ?p <${resourceURI}> }
+        UNION
+        { <${resourceURI}> ?p ?subject }
       }
     }
     GROUP BY ?class
+    ${limit > 0 ? `LIMIT ${limit}` : ""}
   `;
 };
 

@@ -24,19 +24,20 @@ const blankNodeNeighborsCountTemplate = ({
   limit = 0,
 }: SPARQLBlankNodeNeighborsCountRequest) => {
   return `
-    SELECT ?bNode ?class (COUNT(?class) AS ?count) {
-      ?subject a ?class {
-        SELECT DISTINCT ?bNode ?subject ?class {
-          ?subject a ?class .
-          { ?subject ?p ?bNode }
-          UNION
-          { ?bNode ?p ?subject }
-          { ${subQuery} }
-        }
-        ${limit > 0 ? `LIMIT ${limit}` : ""}
-      }
+    SELECT ?bNode ?class (COUNT(DISTINCT ?subject) AS ?count)
+    WHERE {
+      ?subject a ?class.
+
+      { ?subject ?p ?bNode }
+      UNION
+      { ?bNode ?p ?subject }
+
+      ${subQuery}
+      
+      FILTER(isBlank(?bNode))
     }
     GROUP BY ?bNode ?class
+    ${limit > 0 ? `LIMIT ${limit}` : ""}
   `;
 };
 

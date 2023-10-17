@@ -92,32 +92,35 @@ const oneHopNeighborsTemplate = ({
     }
     return `LIMIT ${limit} OFFSET ${offset}`;
   };
+  console.log("🚀 ~ file: oneHopNeighborsTemplate.ts:95 ~ oneHopNeighborsTemplate:", oneHopNeighborsTemplate)
 
   return `
-    SELECT ?subject ?pred ?value ?subjectClass ?pToSubject ?pFromSubject {
-      ?subject a     ?subjectClass;
-               ?pred ?value {
-        SELECT DISTINCT ?subject ?pToSubject ?pFromSubject {
-          BIND(<${resourceURI}> AS ?argument)
-          ${getSubjectClasses()}
-          {
-            ?argument ?pToSubject ?subject.
-            ?subject a         ?subjectClass;
-                     ?sPred    ?sValue .
-            ${getFilters()}
-          }
-          UNION
-          {
-            ?subject ?pFromSubject ?argument;
-                     a         ?subjectClass;
-                     ?sPred    ?sValue .
-           ${getFilters()}
-          }
-        }
-        ${getLimit()}
+    SELECT ?subject ?pred ?value ?subjectClass ?pToSubject ?pFromSubject
+    WHERE {
+      BIND(<${resourceURI}> AS ?argument)
+
+      # Subjects connected to ?argument
+      {
+        ?argument ?pToSubject ?subject.
+        ?subject a ?subjectClass;
+                ?sPred      ?sValue .
+        ${getFilters()}
       }
+      UNION
+      # Subjects that connect to ?argument
+      {
+        ?subject ?pFromSubject ?argument;
+                a             ?subjectClass;
+                ?sPred        ?sValue .
+        ${getFilters()}
+      }
+      
+      ?subject ?pred ?value.
       FILTER(isLiteral(?value))
+      
+      ${getSubjectClasses()}
     }
+    ${getLimit()}
   `;
 };
 

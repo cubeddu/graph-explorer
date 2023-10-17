@@ -36,7 +36,7 @@ const keywordSearchTemplate = ({
   searchTerm,
   subjectClasses = [],
   predicates = [],
-  limit = 10,
+  limit = 0,
   offset = 0,
   exactMatch = false,
 }: SPARQLKeywordSearchRequest): string => {
@@ -89,19 +89,16 @@ const keywordSearchTemplate = ({
   };
 
   return `
-    SELECT ?subject ?pred ?value ?class {
-      ?subject ?pred ?value {
-        SELECT DISTINCT ?subject ?class {
-            ?subject a          ?class ;
-                     ?predicate ?value .
-            ${getFilterPredicates()}
-            ${getSubjectClasses()}
-            ${getFilterObject()}
-        }
-        ${limit > 0 ? `LIMIT ${limit} OFFSET ${offset}` : ""}
-      }
+    SELECT ?subject ?pred ?value ?class
+    WHERE {
+      ?subject a ?class .
+      ?subject ?pred ?value .
+      ${getFilterPredicates()}
+      ${getSubjectClasses()}
+      ${getFilterObject()}
       FILTER(!isBlank(?subject) && isLiteral(?value))
     }
+    ${limit > 0 ? `LIMIT ${limit} OFFSET ${offset}` : ""}
   `;
 };
 

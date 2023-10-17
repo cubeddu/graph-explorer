@@ -15,24 +15,21 @@ const keywordSearchBlankNodesIdsTemplate = ({
   searchTerm,
   subjectClasses = [],
   predicates = [],
-  limit = 10,
+  limit = 100,
   offset = 0,
 }: SPARQLKeywordSearchRequest): string => {
   return `
-    SELECT DISTINCT ?bNode {
-      ?bNode ?pred ?value {
-        SELECT DISTINCT ?bNode {
-            ?bNode a          ?class ;
-                   ?predicate ?value .
-            ${getFilterPredicates(predicates)}
-            ${getSubjectClasses(subjectClasses)}
-            ${getFilterObject(searchTerm)}
-        }
-        ${limit > 0 ? `LIMIT ${limit} OFFSET ${offset}` : ""}
-      }
-      FILTER(isLiteral(?value))
-      FILTER(isBlank(?bNode))
+   SELECT DISTINCT ?bNode
+    WHERE {
+      ?bNode a ?class;
+            ?predicate ?value.
+      ${getFilterPredicates(predicates)}
+      ${getSubjectClasses(subjectClasses)}
+      ${getFilterObject(searchTerm)}
+      
+      FILTER(isLiteral(?value) && isBlank(?bNode))
     }
+    ${limit > 0 ? `LIMIT ${limit} OFFSET ${offset}` : ""}
   `;
 };
 
