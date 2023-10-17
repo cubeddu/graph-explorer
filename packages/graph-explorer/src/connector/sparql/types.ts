@@ -125,6 +125,10 @@ export type SPARQLKeywordSearchRequest = {
    * Skip the given number of results.
    */
   offset?: number;
+  /**
+   * Exact match.
+   */
+  exactMatch?: boolean;
 };
 
 export type SPARQLBlankNodeNeighborsRequest = {
