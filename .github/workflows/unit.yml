@@ -22,6 +22,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - uses: oven-sh/setup-bun@v1
+
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -33,12 +35,10 @@ jobs:
           version: ${{ matrix.pnpm-version }}
 
       - name: Install package and dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Run package tests
-        run: pnpm test
+        run: bun test
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          flags: unittests
+      - run: bun index.ts
+      - run: bun test --coverage
