@@ -21,8 +21,10 @@
   "author": "amazon",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@types/figlet": "^1.5.7",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
+    "bun-types": "latest",
     "concurrently": "^8.2.0",
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.33.0",
@@ -50,5 +52,10 @@
       "xml2js@<0.5.0": ">=0.5.0",
       "semver@<7.5.2": ">=7.5.2"
     }
+  },
+  "module": "index.ts",
+  "type": "module",
+  "dependencies": {
+    "figlet": "^1.7.0"
   }
 }

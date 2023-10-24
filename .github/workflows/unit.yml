@@ -12,33 +12,16 @@ on:
 jobs:
   install-and-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 18.16.0
-        pnpm-version:
-          - 7.9.3
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Set up pnpm ${{ matrix.pnpm-version }}
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ matrix.pnpm-version }}
-
       - name: Install package and dependencies
-        run: pnpm install
+        uses: oven-sh/setup-bun@v1
 
+      - run: bun install
+
+      - run: bun index.ts
       - name: Run package tests
-        run: pnpm test
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          flags: unittests
+        run: bun test --coverage

@@ -7,7 +7,7 @@ import type {
 } from "../core";
 
 export type QueryOptions = {
-  abortSignal?: AbortSignal;
+  signal?: AbortSignal;
   disableCache?: boolean;
 };
 
@@ -261,7 +261,7 @@ export abstract class AbstractConnector {
    */
   protected async requestQueryTemplate<TResult = any>(
     queryTemplate: string,
-    options?: { signal?: AbortSignal; disableCache?: boolean }
+    options?: QueryOptions
   ): Promise<TResult> {
     const encodedQuery = encodeURIComponent(queryTemplate);
     const uri = `${this.basePath}${encodedQuery}&format=json`;
@@ -270,7 +270,7 @@ export abstract class AbstractConnector {
 
   protected async request<TResult = any>(
     uri: string,
-    options?: { signal?: AbortSignal; disableCache?: boolean }
+    options?: QueryOptions
   ): Promise<TResult> {
     const url = this._connection.url.replace(/\/$/, "");
     const currentUri = `${url}${uri}`;
@@ -279,16 +279,26 @@ export abstract class AbstractConnector {
     if (
       cachedResponse &&
       cachedResponse.updatedAt +
-        (this._connection.cacheTimeMs ?? CACHE_TIME_MS) >
-        new Date().getTime()
+      (this._connection.cacheTimeMs ?? CACHE_TIME_MS) >
+      new Date().getTime()
     ) {
       return cachedResponse.data;
     }
 
-    return this._requestAndCache<TResult>(currentUri, {
+    const fetchOptions: RequestInit = {
       signal: options?.signal,
       headers: this._getAuthHeaders(),
-    });
+    };
+
+    const connectionFetchTimeout = this._connection.fetchTimeoutMs;
+
+    if (connectionFetchTimeout && connectionFetchTimeout > 0) {
+      fetchOptions.signal = AbortSignal.timeout(
+        connectionFetchTimeout,
+      );
+    }
+
+    return this._requestAndCache<TResult>(currentUri, fetchOptions, options) as Promise<TResult>;
   }
 
   private _getAuthHeaders() {
@@ -308,12 +318,20 @@ export abstract class AbstractConnector {
     init?: RequestInit,
     options?: Pick<QueryOptions, "disableCache">
   ) {
-    const response = await fetch(url, init);
-    const data = await response.json();
-    if (options?.disableCache !== true) {
-      this._setToCache(url, { data, updatedAt: new Date().getTime() });
+    try {
+      const response = await fetch(url, init);
+      const data = await response.json();
+      if (options?.disableCache !== true) {
+        this._setToCache(url, { data, updatedAt: new Date().getTime() });
+      }
+      return data as TResult;
+    } catch (error) {
+      if (error.name === "AbortError") {
+        console.error(`The request to ${url} timed out after ${this._connection?.fetchTimeoutMs}ms. This may indicate a slow operation or a network issue. To address this issue, you can try increasing the fetch timeout using the 'fetchTimeoutMs' option in your connections configuration. You can also check your network connection and server performance to ensure that they are not causing the issue.`);
+      } else {
+        console.error(`Request failed: ${url}`, error);
+      }
     }
-    return data as TResult;
   }
 
   private _getFromCache(key: string) {
