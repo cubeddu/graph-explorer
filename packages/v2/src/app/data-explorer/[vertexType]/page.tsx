@@ -111,29 +111,22 @@ export default function Page() {
         />
       }
     >
-      {/* <Container
-          id="cache-behavior-panel"
-          className="custom-screenshot-hide"
-          header={<Header variant="h2">Cache behavior settings</Header>}
-        >
-          <SpaceBetween size="l">
-            <FormField
-              label="Create policy"
-              description="Create a policy for your cache behavior settings."
-              stretch={true}
-            >
-              <CodeEditor
-                ace={ace}
-                value={codeEditorValue}
-                language="caca"
-                onChange={onCodeEditorChange}
-                preferences={codeEditorPreferences}
-                onPreferencesChange={onCodeEditorPreferencesChange}
-                loading={codeEditorLoading}
-              />
-            </FormField>
-          </SpaceBetween>
-        </Container> */}
+      <Container
+        id="cache-behavior-panel"
+        className="custom-screenshot-hide"
+        header={<Header variant="h2">Schema</Header>}
+      >
+        <SpaceBetween size="l">
+          <CodeEditor
+            ace={ace}
+            value={codeEditorValue}
+            language="json"
+            onChange={onCodeEditorChange}
+            preferences={codeEditorPreferences}
+            loading={codeEditorLoading}
+          />
+        </SpaceBetween>
+      </Container>
       <Container
         header={
           <Header
@@ -175,7 +168,7 @@ export default function Page() {
               </SpaceBetween>
             }
           >
-            <Button>Back to all Data</Button>
+            <Button href="/connections">Back to all Data</Button>
           </Header>
         }
       >

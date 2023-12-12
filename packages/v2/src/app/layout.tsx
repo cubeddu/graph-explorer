@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@cloudscape-design/global-styles/index.css";
+import { Theme, applyTheme } from "@cloudscape-design/components/theming";
 
 const inter = Inter({ subsets: ["latin"] });
 
