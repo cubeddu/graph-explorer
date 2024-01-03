@@ -1,4 +1,5 @@
 const express = require("express");
+const { fetchToCurl } = require("fetch-to-curl");
 const cors = require("cors");
 const compression = require("compression");
 const dotenv = require("dotenv");
@@ -85,6 +86,8 @@ const retryFetch = async (
       options = { ...options, ...data };
     }
     try {
+      console.log("🚀 ~ file: node-server.js:86 ~ options:", options);
+      console.log(fetchToCurl(url, options));
       const res = await fetch(url.href, { ...options });
       if (!res.ok) {
         const result = await res.json();
