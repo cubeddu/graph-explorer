@@ -9,125 +9,23 @@ import Button from "@cloudscape-design/components/button";
 import Board from "@cloudscape-design/board-components/board";
 import BoardItem from "@cloudscape-design/board-components/board-item";
 import {
-  Badge,
-  BreadcrumbGroup,
-  Cards,
-  Checkbox,
-  CodeEditor,
   CollectionPreferences,
-  ColumnLayout,
   Container,
   ContentLayout,
-  ExpandableSection,
   Header,
-  Icon,
   Link,
   Pagination,
-  RadioGroup,
   Select,
   Table,
   TextFilter,
-  Textarea,
-  Tiles,
-  TopNavigation,
 } from "@cloudscape-design/components";
-import TopBarWithLogo from "@/workspaces/common/TopBarWithLogo";
-import GraphExplorerIcon from "@/components/icons/GraphExplorerIcon";
-import { ExplorerIcon, IconButton } from "@/components";
-import {
-  applyMode,
-  applyDensity,
-  Density,
-  Mode,
-} from "@cloudscape-design/global-styles";
 
 export default function Page() {
-  const [visible, setVisible] = React.useState(false);
-  const [readOnlyWithErrors, setReadOnlyWithErrors] = React.useState(false);
-  const [ace, setAce] = React.useState(undefined);
-  const [codeEditorLoading, setCodeEditorLoading] = React.useState(true);
-  const [codeEditorValue, setCodeEditorValue] = React.useState(
-    false ? "{ invalidJson }" : ""
-  );
-  const [codeEditorPreferences, setCodeEditorPreferences] =
-    React.useState(undefined);
-  const [isDark, setThemeMode] = React.useState(false);
-  const [selectedItems, setSelectedItems] = React.useState([
-    { name: "Item 2" },
-  ]);
-
-  const onCodeEditorChange = (e: {
-    detail: { value: React.SetStateAction<string> };
-  }) => {
-    !readOnlyWithErrors && setCodeEditorValue(e.detail.value);
-  };
-
-  const onCodeEditorPreferencesChange = (e: {
-    detail: React.SetStateAction<undefined>;
-  }) => {
-    !readOnlyWithErrors && setCodeEditorPreferences(e.detail);
-  };
-
-  React.useEffect(() => {
-    console.log("isDark", isDark);
-    applyMode(isDark ? Mode.Dark : Mode.Light);
-    applyDensity(Density.Comfortable);
-  }, [isDark]);
-
-  React.useEffect(() => {
-    setCodeEditorLoading(true);
-    import("ace-builds").then((ace) => {
-      ace.config.set("basePath", "./libs/ace/");
-      setAce(ace as any);
-      setCodeEditorLoading(false);
-    });
-  }, []);
-
+  const [selectedItems, setSelectedItems] = React.useState([]);
   return (
-    <ContentLayout
-      header={
-        <TopNavigation
-          identity={{
-            href: "#",
-            title: "Graph Explorer",
-          }}
-          utilities={[
-            {
-              type: "button",
-              text: "Connections",
-              href: "/connections",
-            },
-            {
-              type: "button",
-              text: "Data Explorer",
-              href: "/data-explorer/connect",
-            },
-            {
-              type: "button",
-              text: "Graph Explorer",
-              href: "/graph-explorer",
-            },
-          ]}
-        />
-      }
-    >
+    <ContentLayout>
       <Container
-        id="cache-behavior-panel"
-        className="custom-screenshot-hide"
-        header={<Header variant="h2">Schema</Header>}
-      >
-        <SpaceBetween size="l">
-          <CodeEditor
-            ace={ace}
-            value={codeEditorValue}
-            language="json"
-            onChange={onCodeEditorChange}
-            preferences={codeEditorPreferences}
-            loading={codeEditorLoading}
-          />
-        </SpaceBetween>
-      </Container>
-      <Container
+        fitHeight
         header={
           <Header
             variant="h1"
@@ -168,7 +66,7 @@ export default function Page() {
               </SpaceBetween>
             }
           >
-            <Button href="/connections">Back to all Data</Button>
+            <Button href="/">Back to all Data</Button>
           </Header>
         }
       >
@@ -213,9 +111,7 @@ export default function Page() {
               id: "sendToGE",
               header: "",
               cell: (item) => (
-                <Button>
-                  <Icon name="insert-row" /> Send to Explorer
-                </Button>
+                <Button href="/graph-explorer">Send to Explorer</Button>
               ),
             },
           ]}
@@ -228,128 +124,50 @@ export default function Page() {
           ]}
           items={[
             {
-              name: "Item 1",
-              alt: "First",
-              description: "This is the first item",
-              type: "1A",
-              size: "Small",
-            },
-            {
-              name: "Item 2",
-              alt: "Second",
-              description: "This is the second item",
-              type: "1B",
-              size: "Large",
-            },
-            {
-              name: "Item 3",
-              alt: "Third",
-              description: "-",
-              type: "1A",
-              size: "Large",
-            },
-            {
-              name: "Item 4",
-              alt: "Fourth",
-              description: "This is the fourth item",
-              type: "2A",
-              size: "Small",
-            },
-            {
-              name: "Item 5",
+              name: "Comment 1",
               alt: "-",
-              description: "This is the fifth item with a longer description",
+              description:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
               type: "2A",
               size: "Large",
             },
             {
-              name: "Item 6",
+              name: "Comment 2",
               alt: "Sixth",
-              description: "This is the sixth item",
+              description:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
               type: "1A",
               size: "Small",
             },
             {
-              name: "Item 1",
+              name: "Comment 3",
               alt: "First",
-              description: "This is the first item",
+              description:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
               type: "1A",
               size: "Small",
             },
             {
-              name: "Item 22",
-              alt: "Secondd",
-              description: "This is the second item",
-              type: "1B",
-              size: "Large",
-            },
-            {
-              name: "Item 3",
-              alt: "Third",
-              description: "-",
-              type: "1A",
-              size: "Large",
-            },
-            {
-              name: "Item 4",
-              alt: "Fourth",
-              description: "This is the fourth item",
-              type: "2A",
-              size: "Small",
-            },
-            {
-              name: "Item 5",
-              alt: "-",
-              description: "This is the fifth item with a longer description",
-              type: "2A",
-              size: "Large",
-            },
-            {
-              name: "Item 6",
-              alt: "Sixth",
-              description: "This is the sixth item",
-              type: "1A",
-              size: "Small",
-            },
-            {
-              name: "Item 1",
+              name: "Comment 4",
               alt: "First",
-              description: "This is the first item",
+              description:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
               type: "1A",
               size: "Small",
             },
             {
-              name: "Item 24",
-              alt: "Secondd",
-              description: "This is the second item",
-              type: "1B",
-              size: "Large",
-            },
-            {
-              name: "Item 3",
-              alt: "Third",
-              description: "-",
+              name: "Comment 5",
+              alt: "First",
+              description:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
               type: "1A",
-              size: "Large",
-            },
-            {
-              name: "Item 4",
-              alt: "Fourth",
-              description: "This is the fourth item",
-              type: "2A",
               size: "Small",
             },
             {
-              name: "Item 5",
-              alt: "-",
-              description: "This is the fifth item with a longer description",
-              type: "2A",
-              size: "Large",
-            },
-            {
-              name: "Item 6",
-              alt: "Sixth",
-              description: "This is the sixth item",
+              name: "Comment 6",
+              alt: "First",
+              description:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
               type: "1A",
               size: "Small",
             },
@@ -382,7 +200,7 @@ export default function Page() {
               nep:Country
             </Header>
           }
-          pagination={<Pagination currentPageIndex={3} pagesCount={20} />}
+          pagination={<Pagination currentPageIndex={1} pagesCount={25} />}
           preferences={
             <CollectionPreferences
               title="Preferences"

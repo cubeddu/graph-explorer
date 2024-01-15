@@ -9,6 +9,7 @@ import Button from "@cloudscape-design/components/button";
 import Board from "@cloudscape-design/board-components/board";
 import BoardItem from "@cloudscape-design/board-components/board-item";
 import {
+  Alert,
   AppLayout,
   Badge,
   BreadcrumbGroup,
@@ -42,8 +43,30 @@ import {
   Density,
   Mode,
 } from "@cloudscape-design/global-styles";
+import CytoscapeGraph from "@/components/CitoGraph";
+import GETable from "@/components/Table";
 
 export default function Page() {
+  const [items, setItems] = React.useState([
+    {
+      id: "1",
+      rowSpan: 5,
+      columnSpan: 4,
+      data: { title: "Graph View", content: <CytoscapeGraph /> },
+    },
+    {
+      id: "2",
+      rowSpan: 4,
+      columnSpan: 4,
+      data: { title: "Table View", content: <GETable /> },
+    },
+    {
+      id: "3",
+      rowSpan: 1,
+      columnSpan: 4,
+      data: { title: "Demo 3", content: "Third item" },
+    },
+  ]);
   const [visible, setVisible] = React.useState(false);
   const [readOnlyWithErrors, setReadOnlyWithErrors] = React.useState(false);
   const [ace, setAce] = React.useState(undefined);
@@ -86,52 +109,15 @@ export default function Page() {
   }, []);
 
   return (
-    <ContentLayout
-      header={
-        <TopNavigation
-          identity={{
-            href: "#",
-            title: "Graph Explorer",
-          }}
-          utilities={[
-            {
-              type: "button",
-              text: "Connections",
-              href: "/connections",
-            },
-            {
-              type: "button",
-              text: "Data Explorer",
-              href: "/data-explorer/connect",
-            },
-            {
-              type: "button",
-              text: "Graph Explorer",
-              href: "/graph-explorer",
-            },
-          ]}
-        />
-      }
-    >
+    <Container fitHeight>
       <ColumnLayout>
-        <Container
-          header={
-            <Header variant="h2">
-              <SpaceBetween direction="horizontal" size="l">
-                Available connections{" "}
-                <Button onClick={() => setThemeMode(!isDark)}>
-                  <Icon name="upload" />
-                </Button>
-                <Button onClick={() => setVisible(true)}>
-                  <Icon name="add-plus" />
-                </Button>
-              </SpaceBetween>
-            </Header>
-          }
-        >
-          <SpaceBetween size="m">
+        <SpaceBetween size="m">
+          <div>
             <Board
-              renderItem={(item) => (
+              empty={<div>Empty</div>}
+              renderItem={(item: {
+                data: { title: string; content: string };
+              }) => (
                 <BoardItem
                   header={<Header>{item.data.title}</Header>}
                   i18nStrings={{
@@ -143,48 +129,11 @@ export default function Page() {
                       "Use Space or Enter to activate resize, arrow keys to move, Space or Enter to submit, or Escape to discard.",
                   }}
                 >
-                  <SpaceBetween size="m">
-                    <div>
-                      <Badge color="blue">{item.data.label}</Badge>
-                    </div>
-                    <div>{item.data.url}</div>
-                  </SpaceBetween>
                   {item.data.content}
                 </BoardItem>
               )}
               onItemsChange={(event) => setItems(event.detail.items)}
-              items={[
-                {
-                  id: "1",
-                  rowSpan: 1,
-                  columnSpan: 1,
-                  data: {
-                    title: "connection1",
-                    url: "http://localhost:8182",
-                    label: "Gremlin - (PG)",
-                  },
-                },
-                {
-                  id: "2",
-                  rowSpan: 1,
-                  columnSpan: 1,
-                  data: {
-                    title: "connection 2",
-                    url: "http://localhost:8182",
-                    label: "OpenCypher - (PG)",
-                  },
-                },
-                {
-                  id: "3",
-                  rowSpan: 1,
-                  columnSpan: 3,
-                  data: {
-                    title: "Connection 3",
-                    url: "https://neptune.aws.com/8182",
-                    label: "SPARQL - (RDF)",
-                  },
-                },
-              ]}
+              items={items}
               i18nStrings={(() => {
                 function createAnnouncement(
                   operationAnnouncement,
@@ -267,9 +216,9 @@ export default function Page() {
                 };
               })()}
             />
-          </SpaceBetween>
-        </Container>
+          </div>
+        </SpaceBetween>
       </ColumnLayout>
-    </ContentLayout>
+    </Container>
   );
 }
