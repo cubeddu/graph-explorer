@@ -500,6 +500,9 @@ importers:
       patch-package:
         specifier: ^8.0.0
         version: 8.0.0
+      pino:
+        specifier: ^8.14.2
+        version: 8.14.2
       re-resizable:
         specifier: ^6.9.9
         version: 6.9.9(react-dom@18.0.0)(react@18.0.0)

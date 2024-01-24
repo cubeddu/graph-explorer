@@ -1,17 +1,88 @@
 'use server'
-export async function getSummaryApi() {
-    const url = 'https://cole-snb-10-rdf-export-test-cluster.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182'
-    const slugType = 'rdf' || 'pg';
-    const path = 'statistics/summary?mode=detailed';
-    const urlToFetch = `${url}/${slugType}/${path}`;
-    console.log('[getSummaryApi]: debugging before fetch', urlToFetch); // when debug mode on
+import { z } from 'zod'
 
-    const response = await fetch(urlToFetch, {
+const schema = z.object({
+    status: z.string().regex(/^200 OK$/),
+    payload: z.object({
+        version: z.string(),
+        lastStatisticsComputationTime: z.date(),
+        graphSummary: z.object({
+            numDistinctSubjects: z.number(),
+            numDistinctPredicates: z.number(),
+            numQuads: z.number(),
+            numClasses: z.number(),
+            classes: z.array(z.string()),
+            predicates: z.array(
+                z.record(z.string().min(3), z.number()),
+            ),
+            subjectStructures: z.array(
+                z.object({
+                    count: z.number(),
+                    predicates: z.array(z.string()),
+                }),
+            ),
+        }),
+    }),
+});
+
+import { getLogger } from "../utils/pino";
+const logger = getLogger("getSummaryAPi");
+
+export async function getSummaryApi() {
+    const url = 'https://nep-export-test-1.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182/pg/statistics/summary?mode=detailed'
+    const slug = 'pg' || 'rdf';
+    const path = 'statistics/summary?mode=detailed';
+    const urlToFetch = `${url}/${slug}/${path}`;
+    logger.debug({ href: urlToFetch }, "DEBUG: urlToFetch");
+
+    const response = await fetch("https://nep-export-test-1.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182/pg/statistics/summary?mode=detailed", {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
     });
     const result = await response.json();
+
+    logger.debug({ result }, "DEBUG: result");
     return result;
 }
+
+// sample response payload
+// {
+//     "status": "200 OK",
+//     "payload": {
+//         "version": "v1",
+//         "lastStatisticsComputationTime": "2023-02-23T22:39:50.362Z",
+//         "graphSummary": {
+//             "numDistinctSubjects": 78134770,
+//             "numDistinctPredicates": 57,
+//             "numQuads": 478355852,
+//             "numClasses": 15,
+//             "classes": [
+//                 "http://dbpedia.org/ontology/University",
+//                 "http://aws.amazon.com/neptune/csv2rdf/class/Continent",
+//                 "http://dbpedia.org/ontology/City"
+//             ],
+//             "predicates": [
+//                 {
+//                     "http://www.ldbc.eu/ldbc_socialnet/1.0/vocabulary/creationDate": 60690020
+//                 },
+//                 {
+//                     "http://aws.amazon.com/neptune/csv2rdf/datatypeProperty/author": 1
+//                 },
+//                 {
+//                     "http://aws.amazon.com/neptune/csv2rdf/datatypeProperty/date": 1
+//                 }
+//             ],
+//             "subjectStructures": [
+//                 {
+//                     "count": 19949360,
+//                     "predicates": [
+//                         "http://www.ldbc.eu/ldbc_socialnet/1.0/vocabulary/creationDate",
+//                         "http://www.ldbc.eu/ldbc_socialnet/1.0/vocabulary/hasComment"
+//                     ]
+//                 }
+//             ]
+//         }
+//     }
+// }

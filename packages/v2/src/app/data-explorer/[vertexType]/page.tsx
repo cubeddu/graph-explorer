@@ -207,7 +207,7 @@ export default function Page() {
               confirmLabel="Confirm"
               cancelLabel="Cancel"
               preferences={{
-                pageSize: 10,
+                pageSize: 25,
                 contentDisplay: [
                   { id: "variable", visible: true },
                   { id: "value", visible: true },

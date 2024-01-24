@@ -1,5 +1,5 @@
 import { atom } from "jotai";
 
-const countAtom = atom(0);
+const countAtom = atom({ count: 0 });
 
 export { countAtom };
