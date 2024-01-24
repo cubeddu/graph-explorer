@@ -49,9 +49,10 @@ import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { countAtom } from "./state";
 import ConnectionDetail from "@/modules/ConnectionDetail";
 import { SyncIcon } from "@/components";
+import { StoreContext } from "./StoreProvider";
 
 function DisplayConnections() {
-  const [count, setCount] = useAtom(countAtom);
+  const { isDarkMode } = React.useContext(StoreContext);
   const [visible, setVisible] = React.useState(false);
   const [checked, setChecked] = React.useState(false);
   const [connections, setConnections] = React.useState([
@@ -123,7 +124,6 @@ function DisplayConnections() {
             </Container>
           ))}
         </SpaceBetween>
-
         <div>
           <ColumnLayout>
             <Container
@@ -143,7 +143,6 @@ function DisplayConnections() {
               </SpaceBetween>
             </Container>
             <SpaceBetween size="m">
-              {/* create a div with a red circle 100 by 100 */}
               <Box textAlign="center">
                 <Box variant="p">
                   <Badge color="red">Not Synchronized</Badge>
@@ -227,14 +226,6 @@ function DisplayConnections() {
                 AWS IAM Auth Enabled
               </Checkbox>
             </FormField>
-            {/* <FormField stretch={true}>
-          <Checkbox
-            onChange={({ detail }) => console.log(detail.checked)}
-            checked={false}
-          >
-            Enable Cache
-          </Checkbox>
-        </FormField> */}
 
             <FormField stretch={true}>
               <Checkbox

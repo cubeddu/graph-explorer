@@ -1,5 +1,4 @@
-'use server'
-import { z } from 'zod'
+import * as z from 'zod';
 
 const schema = z.object({
     status: z.string().regex(/^200 OK$/),
@@ -25,27 +24,13 @@ const schema = z.object({
     }),
 });
 
-import { getLogger } from "../utils/pino";
-const logger = getLogger("getSummaryAPi");
+// Inferring type from parsed schema
+type SummaryApiResponse = z.infer<typeof schema>;
 
-export async function getSummaryApi() {
-    const url = 'https://nep-export-test-1.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182/pg/statistics/summary?mode=detailed'
-    const slug = 'pg' || 'rdf';
-    const path = 'statistics/summary?mode=detailed';
-    const urlToFetch = `${url}/${slug}/${path}`;
-    logger.debug({ href: urlToFetch }, "DEBUG: urlToFetch");
-
-    const response = await fetch("https://nep-export-test-1.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182/pg/statistics/summary?mode=detailed", {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    const result = await response.json();
-
-    logger.debug({ result }, "DEBUG: result");
-    return result;
-}
+export {
+    schema
+};
+export type { SummaryApiResponse };
 
 // sample response payload
 // {

@@ -4,13 +4,13 @@ import * as z from 'zod';
 // more granular control over log levels
 const logLevelData = {
     "*": "silent",
-    connectionPage: "info",
-    dataPage: "info",
-    graphPage: "info",
+    connectionPage: "silent",
+    dataPage: "silent",
+    graphPage: "silent",
     getSummaryAPi: "debug",
-    getSPARQLQuery: "debug",
-    getOpenCypherQuery: "debug",
-    getGremlinQuery: "debug",
+    getSPARQLQuery: "silent",
+    getOpenCypherQuery: "silent",
+    getGremlinQuery: "silent",
 };
 
 type LogLevelKeys = keyof typeof logLevelData;

@@ -8,11 +8,12 @@ export default function Page() {
   return (
     <button
       type="button"
-      onClick={() =>
-        router.push({
-          query: { "awsui-mode": "dark" },
-        })
-      }
+      //   onClick={() =>
+      //     router.push({
+      //       pathname: "/",
+      //       s: { "awsui-mode": "dark" },
+      //     })
+      //   }
     >
       Dashboard
     </button>

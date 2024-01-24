@@ -1,5 +1,5 @@
 import router from "next/router";
-import { getSummaryApi } from "./actions/getSummaryAPI";
+import { getSummaryApi } from "./actions/summaryApi/getSummaryAPI";
 import DisplayConnections from "./display";
 import ClientTest from "./ClientTest";
 
