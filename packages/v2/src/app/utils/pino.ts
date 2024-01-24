@@ -1,4 +1,4 @@
-import pion, { Logger } from 'pino';
+import pino, { Logger } from 'pino';
 import * as z from 'zod';
 
 // more granular control over log levels
@@ -17,7 +17,7 @@ type LogLevelKeys = keyof typeof logLevelData;
 
 export function getLogger<T extends LogLevelKeys>(name: T): Logger {
     const level = logLevelData[name] || logLevelData["*"] || "info";
-    return pion({ name, level });
+    return pino({ name, level });
 }
 
 // Default logger
