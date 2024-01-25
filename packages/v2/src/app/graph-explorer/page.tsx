@@ -45,8 +45,18 @@ import {
 } from "@cloudscape-design/global-styles";
 import CytoscapeGraph from "@/components/CitoGraph";
 import GETable from "@/components/Table";
+import ClientTest from "../ClientTest";
+import CodeEditorDisplay from "./CodeEditorDisplay";
+import { StoreContext } from "../StoreProvider";
+import { atomWithToggleAndStorage } from "../state/atomWithToggleAndStorage";
+import { atom, useAtom, useAtomValue } from "jotai";
 
 export default function Page() {
+  const { isDarkMode: isDark } = React.useContext(StoreContext);
+  const [selectedItems, setSelectedItems] = React.useState([
+    { name: "Item 2" },
+  ]);
+
   const [items, setItems] = React.useState([
     {
       id: "1",
@@ -62,36 +72,16 @@ export default function Page() {
     },
     {
       id: "3",
-      rowSpan: 1,
+      rowSpan: 5,
       columnSpan: 4,
-      data: { title: "Demo 3", content: "Third item" },
+      data: {
+        title: "Code Editor",
+        content: <CodeEditorDisplay />,
+      },
     },
   ]);
+
   const [visible, setVisible] = React.useState(false);
-  const [readOnlyWithErrors, setReadOnlyWithErrors] = React.useState(false);
-  const [ace, setAce] = React.useState(undefined);
-  const [codeEditorLoading, setCodeEditorLoading] = React.useState(true);
-  const [codeEditorValue, setCodeEditorValue] = React.useState(
-    false ? "{ invalidJson }" : ""
-  );
-  const [codeEditorPreferences, setCodeEditorPreferences] =
-    React.useState(undefined);
-  const [isDark, setThemeMode] = React.useState(false);
-  const [selectedItems, setSelectedItems] = React.useState([
-    { name: "Item 2" },
-  ]);
-
-  const onCodeEditorChange = (e: {
-    detail: { value: React.SetStateAction<string> };
-  }) => {
-    !readOnlyWithErrors && setCodeEditorValue(e.detail.value);
-  };
-
-  const onCodeEditorPreferencesChange = (e: {
-    detail: React.SetStateAction<undefined>;
-  }) => {
-    !readOnlyWithErrors && setCodeEditorPreferences(e.detail);
-  };
 
   React.useEffect(() => {
     console.log("isDark", isDark);
@@ -99,18 +89,10 @@ export default function Page() {
     applyDensity(Density.Comfortable);
   }, [isDark]);
 
-  React.useEffect(() => {
-    setCodeEditorLoading(true);
-    import("ace-builds").then((ace) => {
-      ace.config.set("basePath", "./libs/ace/");
-      setAce(ace as any);
-      setCodeEditorLoading(false);
-    });
-  }, []);
-
   return (
     <Container fitHeight>
       <ColumnLayout>
+        <ClientTest />
         <SpaceBetween size="m">
           <div>
             <Board

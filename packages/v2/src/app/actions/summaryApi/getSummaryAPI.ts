@@ -18,10 +18,10 @@ export async function getSummaryApi() {
     });
     const result = await response.json();
 
-    if (result.status !== 200) {
-        logger.error({ result }, "DEBUG: result");
-        return undefined;
-    }
+    // if (result.status !== 200) {
+    //     logger.error({ result }, "DEBUG: result");
+    //     return undefined;
+    // }
     const parsedPayload = schema.safeParse(result);
     if (!parsedPayload.success) {
         // Handle validation errors

@@ -1,21 +1,57 @@
 "use client";
 
+import CytoscapeGraph from "@/components/CitoGraph";
+import GETable from "@/components/Table";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import CodeEditorDisplay from "./graph-explorer/CodeEditorDisplay";
 
-export default function Page() {
-  const router = useRouter();
+export default function Form() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const handleSearch = (term: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (term) {
+      params.set("layout", term);
+    } else {
+      params.delete("layout");
+    }
+
+    replace(`${pathname}?${params.toString()}`);
+  };
 
   return (
-    <button
-      type="button"
-      //   onClick={() =>
-      //     router.push({
-      //       pathname: "/",
-      //       s: { "awsui-mode": "dark" },
-      //     })
-      //   }
-    >
-      Dashboard
-    </button>
+    <input
+      placeholder="test"
+      onChange={(event) =>
+        handleSearch(
+          JSON.stringify([
+            {
+              id: "1",
+              rowSpan: 5,
+              columnSpan: 4,
+              data: { title: "Graph View" },
+            },
+            {
+              id: "2",
+              rowSpan: 4,
+              columnSpan: 4,
+              data: { title: "Table View" },
+            },
+            {
+              id: "3",
+              rowSpan: 5,
+              columnSpan: 4,
+              data: {
+                title: "Code Editor",
+              },
+            },
+          ])
+        )
+      }
+      defaultValue={searchParams.get("layout"?.toString()) || ""}
+    />
   );
 }

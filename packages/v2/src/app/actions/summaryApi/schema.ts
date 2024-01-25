@@ -3,7 +3,6 @@ import * as z from 'zod';
 const schema = z.object({
     status: z.string().regex(/^200 OK$/),
     payload: z.object({
-        version: z.string(),
         lastStatisticsComputationTime: z.date(),
         graphSummary: z.object({
             numDistinctSubjects: z.number(),

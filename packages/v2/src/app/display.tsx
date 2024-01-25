@@ -252,3 +252,10 @@ function DisplayConnections() {
 }
 
 export default DisplayConnections;
+function experimental_useFormAction(
+  countAtom: import("jotai").PrimitiveAtom<{ count: number }> & {
+    init: { count: number };
+  }
+): [any, any] {
+  throw new Error("Function not implemented.");
+}
