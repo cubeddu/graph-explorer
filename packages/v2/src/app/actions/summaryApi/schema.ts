@@ -22,33 +22,6 @@ const schema = z.object({
     }),
 });
 
-numNodes: number;
-numEdges: number;
-numNodeLabels: number;
-numEdgeLabels: number;
-nodeLabels: Array<string>;
-edgeLabels: Array<string>;
-numNodeProperties: number;
-numEdgeProperties: number;
-nodeProperties: Record<string, number>;
-edgeProperties: Record<string, number>;
-totalNodePropertyValues: number;
-totalEdgePropertyValues: number;
-
-
-numNodes: number;
-numEdges: number;
-numNodeLabels: number;
-numEdgeLabels: number;
-nodeLabels: Array<string>;
-edgeLabels: Array<string>;
-numNodeProperties: number;
-numEdgeProperties: number;
-nodeProperties: Record<string, number>;
-edgeProperties: Record<string, number>;
-totalNodePropertyValues: number;
-totalEdgePropertyValues: number;
-
 // Inferring type from parsed schema
 type SummaryApiResponse = z.infer<typeof schema>;
 
