@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@cloudscape-design/global-styles/index.css";
-import { Theme, applyTheme } from "@cloudscape-design/components/theming";
 import { Toaster } from "react-hot-toast";
 import StoreProvider from "./StoreProvider";
 

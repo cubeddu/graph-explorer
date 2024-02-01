@@ -1,3 +1,5 @@
+"use client";
+
 import { cx } from "@emotion/css";
 import type { PropsWithChildren, ReactElement } from "react";
 import { useMemo } from "react";

@@ -1,9 +1,12 @@
+"use client";
+import { version } from "../../../package.json";
 import { css } from "@emotion/css";
 import { PropsWithChildren } from "react";
 import GraphExplorerIcon from "../../components/icons/GraphExplorerIcon";
 import Workspace from "../../components/Workspace";
 
 const TopBarWithLogo = ({ children }: PropsWithChildren<any>) => {
+  console.log(version);
   return (
     <Workspace.TopBar
       logoVisible={true}
@@ -15,7 +18,7 @@ const TopBarWithLogo = ({ children }: PropsWithChildren<any>) => {
       `}
     >
       {children}
-      <Workspace.TopBar.Version>{__GRAPH_EXP_VERSION__}</Workspace.TopBar.Version>
+      <Workspace.TopBar.Version>{version}</Workspace.TopBar.Version>
     </Workspace.TopBar>
   );
 };

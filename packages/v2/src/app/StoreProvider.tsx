@@ -10,6 +10,7 @@ import {
 } from "@cloudscape-design/components";
 import { atomWithStorage } from "jotai/utils";
 import { atomWithToggleAndStorage } from "./state/atomWithToggleAndStorage";
+import TopBarWithLogo from "@/workspaces/common/TopBarWithLogo";
 
 // Define initial state
 const initialState = {
@@ -64,7 +65,13 @@ export default function StoreProvider({
         </SpaceBetween>
       }
     >
-      <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
+      <StoreContext.Provider value={value}>
+        <TopBarWithLogo>
+          <div>like tests</div>
+        </TopBarWithLogo>
+
+        {children}
+      </StoreContext.Provider>
     </ContentLayout>
   );
 }
