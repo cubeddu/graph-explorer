@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable no-console */
 import { useEffect, useRef } from "react";
 import { useRecoilSnapshot } from "recoil";

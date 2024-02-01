@@ -33,9 +33,7 @@ async function fetchIcon(url: string): Promise<string | undefined> {
       return await response.text();
     }
   } catch (err) {
-    if (import.meta.env.DEV) {
-      console.error(`Unable to fetch ${url}: ${err}`);
-    }
+    console.error(`Unable to fetch ${url}: ${err}`);
   }
 }
 

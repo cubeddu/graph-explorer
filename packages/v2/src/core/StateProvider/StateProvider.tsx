@@ -8,7 +8,7 @@ const StateProvider = ({
   return (
     <RecoilRoot>
       {children}
-      {import.meta.env.DEV && <StateDebug />}
+      <StateDebug />
     </RecoilRoot>
   );
 };

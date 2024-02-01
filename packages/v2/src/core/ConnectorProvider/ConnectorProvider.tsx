@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 import LoggerConnector from "../../connector/LoggerConnector";

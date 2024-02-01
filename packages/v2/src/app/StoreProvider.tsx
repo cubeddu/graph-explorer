@@ -66,9 +66,9 @@ export default function StoreProvider({
       }
     >
       <StoreContext.Provider value={value}>
-        <TopBarWithLogo>
+        {/* <TopBarWithLogo>
           <div>like tests</div>
-        </TopBarWithLogo>
+        </TopBarWithLogo> */}
 
         {children}
       </StoreContext.Provider>

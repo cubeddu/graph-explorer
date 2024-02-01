@@ -1,3 +1,5 @@
+"use client";
+
 import { cx, injectGlobal as emotionInjectGlobal } from "@emotion/css";
 import merge from "lodash/merge";
 import type { CSSProperties, PropsWithChildren } from "react";
@@ -67,8 +69,10 @@ const ThemeProvider = <
   children,
   injectGlobal,
 }: PropsWithChildren<ThemeProviderProps<TThemeExtend>>) => {
-  const actualCustomThemes: Record<string, Theme<TThemeExtend>> =
-    customThemes || EMPTY_OBJECT;
+  const actualCustomThemes: Record<
+    string,
+    Theme<TThemeExtend>
+  > = customThemes || EMPTY_OBJECT;
 
   const [theme, setTheme] = useState<
     ActiveThemeType<ProcessedTheme<TThemeExtend>>
@@ -117,7 +121,7 @@ const ThemeProvider = <
 
   const availableThemesDefinitions = useMemo(() => {
     const customThemesDef: Record<string, ProcessedTheme<TThemeExtend>> = {};
-    Object.keys(actualCustomThemes).forEach(customTheme => {
+    Object.keys(actualCustomThemes).forEach((customTheme) => {
       customThemesDef[customTheme] = getTheme(
         actualCustomThemes[customTheme],
         actualCustomThemes[customTheme]?.mode === "dark"
@@ -155,7 +159,7 @@ const ThemeProvider = <
     if (injectGlobal) {
       let cssVarAsString = "";
       const cssVars = theme.cssVariables["html"] as CSSProperties;
-      Object.keys(cssVars).forEach(cssVar => {
+      Object.keys(cssVars).forEach((cssVar) => {
         cssVarAsString += `${cssVar}:${
           cssVars[cssVar as keyof CSSProperties]
         };`;

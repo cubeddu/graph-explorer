@@ -1,6 +1,7 @@
+"use client";
+
 import merge from "lodash/merge";
 import { PropsWithChildren, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { LoadingSpinner, PanelEmptyState } from "../components";
 import Redirect from "../components/Redirect";
@@ -29,12 +30,11 @@ const STATUS = {
     subtitle: "We are loading the configuration from the file",
   },
 };
-
+//  TODO: remove form statelayer as it cause the whole app to re render move it to the layout level to run serverside
 const AppStatusLoader = ({
   config,
   children,
 }: PropsWithChildren<AppLoadingProps>) => {
-  const location = useLocation();
   useLoadStore();
   const isStoreLoaded = useRecoilValue(isStoreLoadedAtom);
   const [activeConfig, setActiveConfig] = useRecoilState(
@@ -65,14 +65,14 @@ const AppStatusLoader = ({
         }
         newConfig.__fileBase = true;
         let activeConfigId = config.id;
-        setConfiguration(prevConfigMap => {
+        setConfiguration((prevConfigMap) => {
           const updatedConfig = new Map(prevConfigMap);
           if (newConfig.connection?.queryEngine) {
             updatedConfig.set(config.id, newConfig);
           }
           //Set a configuration for each connection if queryEngine is not set
           if (!newConfig.connection?.queryEngine) {
-            CONNECTIONS_OP.forEach(connection => {
+            CONNECTIONS_OP.forEach((connection) => {
               const connectionConfig = {
                 ...newConfig,
                 id: `${newConfig.id}-${connection.value}`,
@@ -99,14 +99,7 @@ const AppStatusLoader = ({
     if (!!config && configuration.get(config.id)) {
       setActiveConfig(config.id);
     }
-  }, [
-    activeConfig,
-    config,
-    configuration,
-    isStoreLoaded,
-    setActiveConfig,
-    setConfiguration,
-  ]);
+  }, []);
 
   // Wait until state is recovered from the indexed DB
   if (!isStoreLoaded) {
@@ -132,11 +125,11 @@ const AppStatusLoader = ({
 
   // Force to be in Connections if no config is activated
   // even by changing the URL
-  if (!activeConfig || !schema.get(activeConfig || "")?.lastUpdate) {
-    if (!location.pathname.match(/\/connections/)) {
-      return <Redirect to={"/connections"} />;
-    }
-  }
+  // if (!activeConfig || !schema.get(activeConfig || "")?.lastUpdate) {
+  //   if (!location.pathname.match(/\/connections/)) {
+  //     return <Redirect to={"/connections"} />;
+  //   }
+  // }
 
   return <>{children}</>;
 };

@@ -1,3 +1,5 @@
+"use client";
+
 import uniqBy from "lodash/uniqBy";
 import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useMemo } from "react";
@@ -32,68 +34,72 @@ const ConfigurationProvider = ({
 }: PropsWithChildren<ConfigurationProviderProps>) => {
   const configuration = useRecoilValue(mergedConfigurationSelector);
 
-  const getVertexTypeConfig: ConfigurationContextProps["getVertexTypeConfig"] = useCallback(
-    vertexType => {
-      const vtConfig = configuration?.schema?.vertices?.find(
-        v => v.type === vertexType
-      );
-      if (!vtConfig) {
-        return getDefaultVertexTypeConfig(vertexType);
-      }
+  const getVertexTypeConfig: ConfigurationContextProps["getVertexTypeConfig"] =
+    useCallback(
+      (vertexType) => {
+        const vtConfig = configuration?.schema?.vertices?.find(
+          (v) => v.type === vertexType
+        );
+        if (!vtConfig) {
+          return getDefaultVertexTypeConfig(vertexType);
+        }
 
-      return vtConfig;
-    },
-    [configuration?.schema?.vertices]
-  );
+        return vtConfig;
+      },
+      [configuration?.schema?.vertices]
+    );
 
-  const getVertexTypeAttributes: ConfigurationContextProps["getVertexTypeAttributes"] = useCallback(
-    (vertexTypes: string[]) => {
-      const vtConfig = configuration?.schema?.vertices?.filter(v =>
-        vertexTypes.includes(v.type)
-      );
+  const getVertexTypeAttributes: ConfigurationContextProps["getVertexTypeAttributes"] =
+    useCallback(
+      (vertexTypes: string[]) => {
+        const vtConfig = configuration?.schema?.vertices?.filter((v) =>
+          vertexTypes.includes(v.type)
+        );
 
-      if (!vtConfig?.length) {
-        return [];
-      }
+        if (!vtConfig?.length) {
+          return [];
+        }
 
-      return uniqBy(
-        vtConfig.flatMap(v => v.attributes),
-        v => v.name
-      );
-    },
-    [configuration?.schema?.vertices]
-  );
+        return uniqBy(
+          vtConfig.flatMap((v) => v.attributes),
+          (v) => v.name
+        );
+      },
+      [configuration?.schema?.vertices]
+    );
 
-  const getVertexTypeSearchableAttributes: ConfigurationContextProps["getVertexTypeSearchableAttributes"] = useCallback(
-    (vertexType: string) => {
-      const vtConfig = configuration?.schema?.vertices?.find(
-        v => v.type === vertexType
-      );
-      if (!vtConfig) {
-        return [];
-      }
+  const getVertexTypeSearchableAttributes: ConfigurationContextProps["getVertexTypeSearchableAttributes"] =
+    useCallback(
+      (vertexType: string) => {
+        const vtConfig = configuration?.schema?.vertices?.find(
+          (v) => v.type === vertexType
+        );
+        if (!vtConfig) {
+          return [];
+        }
 
-      return vtConfig.attributes.filter(
-        attribute =>
-          attribute.searchable !== false && attribute.dataType === "String"
-      );
-    },
-    [configuration?.schema?.vertices]
-  );
+        return vtConfig.attributes.filter(
+          (attribute) =>
+            attribute.searchable !== false && attribute.dataType === "String"
+        );
+      },
+      [configuration?.schema?.vertices]
+    );
 
-  const getEdgeTypeConfig: ConfigurationContextProps["getEdgeTypeConfig"] = useCallback(
-    (edgeType: string) => {
-      const etConfig = configuration?.schema?.edges?.find(
-        e => e.type === edgeType
-      );
-      if (!etConfig) {
-        return getDefaultEdgeTypeConfig(edgeType);
-      }
+  const getEdgeTypeConfig: ConfigurationContextProps["getEdgeTypeConfig"] =
+    useCallback(
+      (edgeType: string) => {
+        const etConfig = configuration?.schema?.edges?.find(
+          (e) => e.type === edgeType
+        );
+        if (!etConfig) {
+          return getDefaultEdgeTypeConfig(edgeType);
+        }
 
-      return etConfig;
-    },
-    [configuration?.schema?.edges]
-  );
+        return etConfig;
+      },
+      [configuration?.schema?.edges]
+    );
 
   const value: ConfigurationContextProps | undefined = useMemo(() => {
     if (!configuration) {
@@ -103,9 +109,9 @@ const ConfigurationProvider = ({
     return {
       ...(configuration || {}),
       totalVertices: configuration.schema?.totalVertices ?? 0,
-      vertexTypes: configuration.schema?.vertices?.map(vt => vt.type) || [],
+      vertexTypes: configuration.schema?.vertices?.map((vt) => vt.type) || [],
       totalEdges: configuration.schema?.totalEdges ?? 0,
-      edgeTypes: configuration.schema?.edges?.map(et => et.type) || [],
+      edgeTypes: configuration.schema?.edges?.map((et) => et.type) || [],
       getVertexTypeConfig,
       getVertexTypeAttributes,
       getVertexTypeSearchableAttributes,

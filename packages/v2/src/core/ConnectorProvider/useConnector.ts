@@ -4,7 +4,7 @@ import { ConnectorContext } from "./ConnectorProvider";
 const useConnector = () => {
   const context = useContext(ConnectorContext);
 
-  if (import.meta.env.DEV && !context) {
+  if (!context) {
     throw new Error("Cannot useConnector outside ConnectorProvider");
   }
 

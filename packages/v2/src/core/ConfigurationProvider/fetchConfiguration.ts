@@ -12,9 +12,7 @@ const fetchConfiguration = async (
     const rawData = await response.json();
     return rawData as RawConfiguration;
   } catch (e) {
-    if (import.meta.env.DEV) {
-      console.error(e);
-    }
+    console.error(e);
   }
 };
 

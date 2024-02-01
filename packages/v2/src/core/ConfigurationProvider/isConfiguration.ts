@@ -1,9 +1,7 @@
 import type { ConfigurationContextProps } from "./types";
 
 const logDevError = (...args: Parameters<typeof console.error>) => {
-  if (import.meta.env.DEV) {
-    console.error(...args);
-  }
+  console.error(...args);
 };
 
 const isConfiguration = (config: any): config is ConfigurationContextProps => {

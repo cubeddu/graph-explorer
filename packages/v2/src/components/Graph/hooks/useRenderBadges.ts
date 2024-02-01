@@ -73,12 +73,11 @@ const useRenderBadges = <TNodeData extends VertexData = VertexData>({
         layerRef.current = cy.cyCanvas({ zIndex: 20 });
         canvasRef.current = layerRef.current.getCanvas() ?? null;
       } catch (e) {
-        if (import.meta.env.DEV)
-          console.error(
-            "If you want to render badges you need to install the " +
-              "cytoscape-canvas plugin first, see the documentation " +
-              "for more information"
-          );
+        console.error(
+          "If you want to render badges you need to install the " +
+          "cytoscape-canvas plugin first, see the documentation " +
+          "for more information"
+        );
         return;
       }
     } else {

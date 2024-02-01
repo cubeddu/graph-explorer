@@ -47,9 +47,7 @@ const toAdvancedList = <TDatum extends object>(
           lisItems = lisItems.sort(sortFn);
         }
       } catch (e) {
-        if (import.meta.env.DEV) {
-          console.error(e);
-        }
+        console.error(e);
       }
       return {
         group,

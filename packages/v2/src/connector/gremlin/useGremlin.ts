@@ -40,9 +40,7 @@ const useGremlin = (connection: ConnectionConfig) => {
       });
       summary = response.payload.graphSummary as GraphSummary;
     } catch (e) {
-      if (import.meta.env.DEV) {
-        console.error("[Summary API]", e);
-      }
+      console.error("[Summary API]", e);
     }
     return fetchSchema(_gremlinFetch(ops), summary);
   }, [_gremlinFetch, url, useFetch]);
