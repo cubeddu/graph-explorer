@@ -10,7 +10,7 @@ import {
 } from "@cloudscape-design/components";
 import { atomWithStorage } from "jotai/utils";
 import { atomWithToggleAndStorage } from "./state/atomWithToggleAndStorage";
-import TopBarWithLogo from "@/workspaces/common/TopBarWithLogo";
+import TopBarWithLogo from "@/app/workspaces/common/TopBarWithLogo";
 
 // Define initial state
 const initialState = {

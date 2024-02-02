@@ -19,8 +19,17 @@ import {
   Table,
   TextFilter,
 } from "@cloudscape-design/components";
+import DataExplorer from "@/app/workspaces/DataExplorer";
 
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
+  const currentPage = Number(searchParams?.page) || 1;
   const [selectedItems, setSelectedItems] = React.useState([]);
   return (
     <ContentLayout>
@@ -70,6 +79,7 @@ export default function Page() {
           </Header>
         }
       >
+        <DataExplorer />
         <Table
           onSelectionChange={({ detail }) =>
             setSelectedItems(detail.selectedItems)

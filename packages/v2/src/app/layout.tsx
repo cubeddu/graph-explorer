@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "@cloudscape-design/global-styles/index.css";
 import { Toaster } from "react-hot-toast";
 import StoreProvider from "./StoreProvider";
-import ConnectedProvider from "@/core/ConnectedProvider";
+import ConnectedProvider from "@/app/core/ConnectedProvider";
 import { grabConfig } from "./actions/graphExplorer/grabConfig";
 
 const inter = Inter({ subsets: ["latin"] });

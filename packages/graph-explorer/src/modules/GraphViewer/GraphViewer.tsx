@@ -276,7 +276,7 @@ const GraphViewer = ({
             <div
               style={{ display: "flex", width: "100%", alignItems: "center" }}
             >
-              <div style={{ whiteSpace: "nowrap" }}>{title}</div>
+              {/* <div style={{ whiteSpace: "nowrap" }}>{title}</div> */}
               <Select
                 className={pfx("entity-select")}
                 label={"Layout"}

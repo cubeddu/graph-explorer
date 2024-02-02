@@ -1,7 +1,7 @@
 "use client";
 
-import CytoscapeGraph from "@/components/CitoGraph";
-import GETable from "@/components/Table";
+import CytoscapeGraph from "@/app/components/CitoGraph";
+import GETable from "@/app/components/Table";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import CodeEditorDisplay from "./graph-explorer/CodeEditorDisplay";

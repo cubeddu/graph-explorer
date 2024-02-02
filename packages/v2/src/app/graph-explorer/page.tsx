@@ -1,98 +1,82 @@
 "use client";
-import * as React from "react";
-import Modal from "@cloudscape-design/components/modal";
-import FormField from "@cloudscape-design/components/form-field";
-import Input from "@cloudscape-design/components/input";
-import Box from "@cloudscape-design/components/box";
 import SpaceBetween from "@cloudscape-design/components/space-between";
-import Button from "@cloudscape-design/components/button";
 import Board from "@cloudscape-design/board-components/board";
 import BoardItem from "@cloudscape-design/board-components/board-item";
-import {
-  Alert,
-  AppLayout,
-  Badge,
-  BreadcrumbGroup,
-  Cards,
-  Checkbox,
-  CodeEditor,
-  CollectionPreferences,
-  ColumnLayout,
-  Container,
-  ContentLayout,
-  ExpandableSection,
-  Header,
-  Icon,
-  Link,
-  Pagination,
-  ProgressBar,
-  RadioGroup,
-  Select,
-  Table,
-  TextFilter,
-  Textarea,
-  Tiles,
-  TopNavigation,
-} from "@cloudscape-design/components";
-import TopBarWithLogo from "@/workspaces/common/TopBarWithLogo";
-import GraphExplorerIcon from "@/components/icons/GraphExplorerIcon";
-import { ExplorerIcon, IconButton } from "@/components";
+import { ColumnLayout, Container, Header } from "@cloudscape-design/components";
 import {
   applyMode,
   applyDensity,
   Density,
   Mode,
 } from "@cloudscape-design/global-styles";
-import CytoscapeGraph from "@/components/CitoGraph";
-import GETable from "@/components/Table";
 import ClientTest from "../ClientTest";
 import CodeEditorDisplay from "./CodeEditorDisplay";
 import { StoreContext } from "../StoreProvider";
-import { atomWithToggleAndStorage } from "../state/atomWithToggleAndStorage";
-import { atom, useAtom, useAtomValue } from "jotai";
+import GraphExplorer from "@/app/workspaces/GraphExplorer";
+import EntitiesTabular from "@/app/modules/EntitiesTabular/EntitiesTabular";
+import GraphViewer from "@/app/modules/GraphViewer";
+import { useContext, useEffect, useState } from "react";
 
 export default function Page() {
-  const { isDarkMode: isDark } = React.useContext(StoreContext);
-  const [selectedItems, setSelectedItems] = React.useState([
-    { name: "Item 2" },
-  ]);
+  const { isDarkMode: isDark } = useContext(StoreContext);
+  const [selectedItems, setSelectedItems] = useState([{ name: "Item 2" }]);
+  const [customizeNodeType, setCustomizeNodeType] = useState<
+    string | undefined
+  >();
+  const [customizeEdgeType, setCustomizeEdgeType] = useState<
+    string | undefined
+  >();
 
-  const [items, setItems] = React.useState([
+  const [items, setItems] = useState([
     {
       id: "1",
       rowSpan: 5,
       columnSpan: 4,
-      data: { title: "Graph View", content: <CytoscapeGraph /> },
+      data: {
+        title: "Graph View",
+        content: (
+          <div
+            style={{
+              width: "100%",
+              flexGrow: 1,
+              position: "relative",
+            }}
+          >
+            <GraphViewer
+              onNodeCustomize={setCustomizeNodeType}
+              onEdgeCustomize={setCustomizeEdgeType}
+            />
+          </div>
+        ),
+      },
     },
     {
       id: "2",
       rowSpan: 4,
       columnSpan: 4,
-      data: { title: "Table View", content: <GETable /> },
-    },
-    {
-      id: "3",
-      rowSpan: 5,
-      columnSpan: 4,
       data: {
-        title: "Code Editor",
-        content: <CodeEditorDisplay />,
+        title: "Table View",
+        content: (
+          <div style={{ width: "100%", height: "100%", flexGrow: 1 }}>
+            <EntitiesTabular />
+          </div>
+        ),
       },
     },
+    // {
+    //   id: "3",
+    //   rowSpan: 5,
+    //   columnSpan: 4,
+    //   data: {
+    //     title: "Code Editor",
+    //     content: <CodeEditorDisplay />,
+    //   },
+    // },
   ]);
-
-  const [visible, setVisible] = React.useState(false);
-
-  React.useEffect(() => {
-    console.log("isDark", isDark);
-    applyMode(isDark ? Mode.Dark : Mode.Light);
-    applyDensity(Density.Comfortable);
-  }, [isDark]);
 
   return (
     <Container fitHeight>
       <ColumnLayout>
-        <ClientTest />
         <SpaceBetween size="m">
           <div>
             <Board
