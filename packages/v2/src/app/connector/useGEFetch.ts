@@ -13,13 +13,12 @@ const localforageCache = localforage.createInstance({
 });
 
 const useGEFetch = (connection: ConnectionConfig) => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 
-  if (!connection.url) {
-    throw new Error("Invalid configuration. Missing 'connection.url'");
+  if (!connection?.url) {
+    return;
   }
 
-  const _getFromCache = useCallback(async (key) => {
+  const _getFromCache = useCallback(async (key: string) => {
     if (!connection.enableCache) {
       return;
     }
@@ -27,7 +26,7 @@ const useGEFetch = (connection: ConnectionConfig) => {
     return localforageCache.getItem(key) as Promise<CacheItem | undefined>;
   }, [connection.enableCache]);
 
-  const _setToCache = useCallback(async (key, value) => {
+  const _setToCache = useCallback(async (key: string, value: any) => {
     if (connection.enableCache) {
       return;
     }
@@ -35,7 +34,9 @@ const useGEFetch = (connection: ConnectionConfig) => {
     return localforageCache.setItem(key, value);
   }, [connection.enableCache]);
 
-  const _requestAndCache = useCallback(async (url, options) => {
+  const _requestAndCache = useCallback(async (url: RequestInfo | URL, options: RequestInit & {
+    disableCache: boolean;
+  } | undefined) => {
     const response = await fetch(url, options);
     const data = await response.json();
     if (options?.disableCache !== true) {
@@ -44,7 +45,7 @@ const useGEFetch = (connection: ConnectionConfig) => {
     return data as any;
   }, [_setToCache]);
 
-  const getAuthHeaders = useCallback((typeHeaders) => {
+  const getAuthHeaders = useCallback((typeHeaders: Headers) => {
     const headers: HeadersInit = {};
     if (connection.proxyConnection) {
       headers["graph-db-connection-url"] = connection.graphDbUrl || "";
@@ -58,7 +59,7 @@ const useGEFetch = (connection: ConnectionConfig) => {
   }, [connection.awsAuthEnabled, connection.awsRegion, connection.graphDbUrl, connection.proxyConnection]);
 
 
-  const request = useCallback(async (uri, options) => {
+  const request = useCallback(async (uri: RequestInfo | URL, options: (RequestInit & { disableCache: boolean; }) | undefined) => {
     const cachedResponse = await _getFromCache(uri);
     if (
       cachedResponse &&

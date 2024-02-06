@@ -1,4 +1,4 @@
-import LoggerConnector from "../../connector/LoggerConnector";
+import { Logger } from "pino";
 import { CountsByTypeResponse, KeywordSearchResponse, NeighborsCountResponse, NeighborsResponse, SchemaResponse } from "../../connector/useGEFetchTypes";
 
 type Explorer = {
@@ -11,5 +11,5 @@ type Explorer = {
 
 export type ConnectorContextProps = {
   explorer?: Explorer;
-  logger?: LoggerConnector;
+  logger?: Logger;
 };

@@ -1,22 +1,51 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import aws4 from 'aws4';
+import { fromNodeProviderChain } from '@aws-sdk/credential-providers';
 
-export function middleware(request: { headers?: any; connection?: any; }) {
-  const { connection } = request;
-  console.log("🚀 ~ middleware ~ connection:", connection)
+export async function middleware(request: Request) {
+  try {
+    const options = {
+      host: request.headers.get('graph-db-connection-url'),
+      path: '/sparql',
+      service: 'neptune-db',
+      region: 'us-west-2',
+      method: request.method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
 
-  // Set headers conditionally based on connection properties
-  request.headers.set(
-    "graph-db-connection-url",
-    (connection?.proxyConnection && connection.graphDbUrl) || ""
-  );
-  request.headers.set(
-    "aws-neptune-region",
-    (connection?.awsAuthEnabled && connection.graphDbRegion) || ""
-  );
+    const headers = await getIAMHeaders(options);
 
-  return NextResponse.next();
+    // Clone the request to modify its headers
+    const modifiedRequest = new Request(request, {
+      headers: {
+        ...request.headers,
+        ...headers,
+      },
+    });
+
+    return NextResponse.next(modifiedRequest);
+  } catch (error) {
+    console.error('Error in IAM middleware:', error);
+    return new Response('Internal Server Error', { status: 500 });
+  }
 }
 
-export const config = {
-  matcher: '*' as const,
+// Adapted IAM headers function to be used in the middleware
+async function getIAMHeaders(options: any) {
+  const credentialProvider = fromNodeProviderChain();
+  let creds = await credentialProvider();
+  if (creds === undefined) {
+    throw new Error(
+      "IAM is enabled but credentials cannot be found on the credential provider chain."
+    );
+  }
+  const signedOptions = aws4.sign(options, {
+    accessKeyId: creds.accessKeyId,
+    secretAccessKey: creds.secretAccessKey,
+    sessionToken: creds.sessionToken,
+  });
+
+  return signedOptions.headers;
 }

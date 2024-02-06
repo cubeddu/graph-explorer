@@ -7,27 +7,19 @@ import type { ConnectorContextProps } from "./types";
 import useOpenCypher from "../../connector/openCypher/useOpenCypher";
 import useSPARQL from "../../connector/sparql/useSPARQL";
 import useGremlin from "../../connector/gremlin/useGremlin";
+import { defaultLogger } from "@/app/utils/pino";
 
 export const ConnectorContext = createContext<ConnectorContextProps>({});
-function useExplorer(connecting: Connecting, queryEngine: string) {
-  const [blankNodes] = useState(new Map<string, any>());
-  const sparql = useSPARQL(connecting, blankNodes);
-  const openCypher = useOpenCypher(connecting);
-  const gremlin = useGremlin(connecting);
-
-  switch (queryEngine) {
-    case "sparql":
-      return sparql;
-    case "openCypher":
-      return openCypher;
-    default:
-      return gremlin;
-  }
-}
 
 const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
   const config = useConfiguration();
-
+  const [engineType, setEngineType] = useState("gremlin");
+  const [blankNodes] = useState(new Map<string, any>());
+  const [getByExplorerEngineType] = useState({
+    gremlin: useGremlin(config?.connection),
+    // OC: useOpenCypher(config?.connection),
+    // SPARQL: useSPARQL(config?.connection, blankNodes),
+  }) as const;
   const [connector, setConnector] = useState<ConnectorContextProps>({
     explorer: undefined,
     logger: undefined,
@@ -38,12 +30,21 @@ const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
     if (!connecting) {
       return;
     }
-
-    const explorer = useExplorer(connecting, connecting.queryEngine);
-    const logger = new LoggerConnector(connecting);
+    const explorer = getByExplorerEngineType[
+      engineType
+    ] as ConnectorContextProps["explorer"];
+    const logger = defaultLogger;
 
     setConnector({ explorer, logger });
-  }, [connecting]);
+
+    return () => {
+      const explorer = null;
+      const logger = null;
+    };
+  }, [connecting, engineType, getByExplorerEngineType]);
+
+  console.log("🚀 ~ ConnectorProvider ~ connector:", connector);
+
   return (
     <ConnectorContext.Provider value={connector}>
       {children}

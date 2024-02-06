@@ -6,7 +6,6 @@ import GraphExplorerIcon from "../../components/icons/GraphExplorerIcon";
 import Workspace from "../../components/Workspace";
 
 const TopBarWithLogo = ({ children }: PropsWithChildren<any>) => {
-  console.log(version);
   return (
     <Workspace.TopBar
       logoVisible={true}

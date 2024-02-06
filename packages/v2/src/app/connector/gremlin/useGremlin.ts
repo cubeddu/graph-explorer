@@ -9,16 +9,24 @@ import useGEFetch from "../useGEFetch";
 import { GraphSummary } from "./types";
 
 const useGremlin = (connection: ConnectionConfig) => {
-  const useFetch = useGEFetch(connection);
-  const url = connection.url;
   const _rawIdTypeMap = useMemo(() => {
     return new Map<string, "string" | "number">();
   }, []);
 
+  const gremlinFetch = async (endpoint: string, options: OptionsType, method: string = "POST", body?: any) => {
+    const requestOpts = {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      ...options,
+    };
+    return await graphExploreFetch(`${endpoint}`, requestOpts);
+  };
+
   const _gremlinFetch = useCallback((options) => {
     return async (queryTemplate: string) => {
       const body = JSON.stringify({ gremlin: queryTemplate });
-      return useFetch.request(`${url}/gremlin`, {
+      return graphExploreFetch(`api/gremlin`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -28,13 +36,13 @@ const useGremlin = (connection: ConnectionConfig) => {
       });
 
     };
-  }, [url, useFetch]);
+  }, [useGEFetch]);
 
-  const fetchSchemaFunc = useCallback(async (options) => {
+  const fetchSchema = useCallback(async (options) => {
     const ops = { ...options, disableCache: true };
     let summary;
     try {
-      const response = await useFetch.request(`${url}/pg/statistics/summary?mode=detailed`, {
+      const response = await graphExploreFetch(`api/pg/summary`, {
         method: "GET",
         ...ops
       });
@@ -43,7 +51,7 @@ const useGremlin = (connection: ConnectionConfig) => {
       console.error("[Summary API]", e);
     }
     return fetchSchema(_gremlinFetch(ops), summary);
-  }, [_gremlinFetch, url, useFetch]);
+  }, [_gremlinFetch]);
 
   const fetchVertexCountsByType = useCallback((req, options) => {
     return fetchVertexTypeCounts(_gremlinFetch(options), req);
@@ -62,7 +70,7 @@ const useGremlin = (connection: ConnectionConfig) => {
   }, [_gremlinFetch, _rawIdTypeMap]);
 
   return {
-    fetchSchema: fetchSchemaFunc,
+    fetchSchema,
     fetchVertexCountsByType,
     fetchNeighbors: fetchNeighborsFunc,
     fetchNeighborsCount: fetchNeighborsCountFunc,

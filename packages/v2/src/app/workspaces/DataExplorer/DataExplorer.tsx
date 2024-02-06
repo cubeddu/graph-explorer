@@ -360,7 +360,7 @@ const DataExplorer = ({ classNamePrefix = "ft" }: ConnectionsProps) => {
                 onPageSizeChange={() =>
                   handlePaginationChange("pageSize", pageSize)
                 }
-                totalRows={vertexConfig?.total ?? pageSize * (pageIndex + 2)}
+                totalRows={vertexConfig?.total || 0}
               />
             </TabularFooterControls>
           </Tabular>
