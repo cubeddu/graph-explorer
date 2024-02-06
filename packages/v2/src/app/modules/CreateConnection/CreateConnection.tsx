@@ -237,7 +237,9 @@ const CreateConnection = ({
           <Checkbox
             value={"proxyConnection"}
             checked={form.proxyConnection}
-            onChange={(e) => {
+            onChange={(e: {
+              target: { checked: string | number | boolean | string[] };
+            }) => {
               onFormChange("proxyConnection")(e.target.checked);
             }}
             label={"Using Proxy-Server"}
@@ -264,7 +266,9 @@ const CreateConnection = ({
             <Checkbox
               value={"awsAuthEnabled"}
               checked={form.awsAuthEnabled}
-              onChange={(e) => {
+              onChange={(e: {
+                target: { checked: string | number | boolean | string[] };
+              }) => {
                 onFormChange("awsAuthEnabled")(e.target.checked);
               }}
               label={"AWS IAM Auth Enabled"}
@@ -291,7 +295,9 @@ const CreateConnection = ({
         <Checkbox
           value={"enableCache"}
           checked={form.enableCache}
-          onChange={(e) => {
+          onChange={(e: {
+            target: { checked: string | number | boolean | string[] };
+          }) => {
             onFormChange("enableCache")(e.target.checked);
           }}
           styles={{
@@ -333,7 +339,9 @@ const CreateConnection = ({
         <Checkbox
           value={"fetchTimeoutMs"}
           checked={!!form.fetchTimeMs}
-          onChange={(e) => {
+          onChange={(e: {
+            target: { checked: string | number | boolean | string[] };
+          }) => {
             onFormChange("fetchTimeMs")(e.target.checked);
           }}
           styles={{

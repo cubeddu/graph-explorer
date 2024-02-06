@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 import LoggerConnector from "../../connector/LoggerConnector";
 import useConfiguration from "../ConfigurationProvider/useConfiguration";
@@ -10,7 +10,8 @@ import useGremlin from "../../connector/gremlin/useGremlin";
 
 export const ConnectorContext = createContext<ConnectorContextProps>({});
 function useExplorer(connecting: Connecting, queryEngine: string) {
-  const sparql = useSPARQL(connecting);
+  const [blankNodes] = useState(new Map<string, any>());
+  const sparql = useSPARQL(connecting, blankNodes);
   const openCypher = useOpenCypher(connecting);
   const gremlin = useGremlin(connecting);
 
@@ -34,19 +35,15 @@ const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
   const connecting = config && config.connection;
 
   useEffect(() => {
-    if (config?.connection?.url) {
-      const explorer = useExplorer(
-        connecting!,
-        config?.connection?.queryEngine
-      );
-      const logger = new LoggerConnector(config?.connection?.url, {
-        enable: import.meta.env.PROD,
-      });
-
-      setConnector({ explorer, logger });
+    if (!connecting) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- We Only Want
-  }, [config?.connection?.url, config?.connection?.queryEngine]);
+
+    const explorer = useExplorer(connecting, connecting.queryEngine);
+    const logger = new LoggerConnector(connecting);
+
+    setConnector({ explorer, logger });
+  }, [connecting]);
   return (
     <ConnectorContext.Provider value={connector}>
       {children}

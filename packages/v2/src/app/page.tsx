@@ -1,5 +1,6 @@
 import { getSummaryApi } from "./actions/summaryApi/getSummaryAPI";
 import DisplayConnections from "./display";
+import Connections from "./workspaces/Connections";
 
 type Props = {
   params: { slug: string };
@@ -7,11 +8,5 @@ type Props = {
 };
 // { params, searchParams }: Props // if need server to read params from url
 export default async function Page({ params, searchParams }: Props) {
-  const test = await getSummaryApi();
-  console.log("🚀 ~ Page ~ test:", test);
-  return (
-    <>
-      <DisplayConnections />
-    </>
-  );
+  return <Connections />;
 }

@@ -99,37 +99,14 @@ const AppStatusLoader = ({
     if (!!config && configuration.get(config.id)) {
       setActiveConfig(config.id);
     }
-  }, []);
-
-  // Wait until state is recovered from the indexed DB
-  if (!isStoreLoaded) {
-    return (
-      <PanelEmptyState
-        title={STATUS.STORE.title}
-        subtitle={STATUS.STORE.subtitle}
-        icon={<LoadingSpinner />}
-      />
-    );
-  }
-
-  // Loading from config file if exists
-  if (configuration.size === 0 && !!config) {
-    return (
-      <PanelEmptyState
-        title={STATUS.CONFIG_FILE.title}
-        subtitle={STATUS.CONFIG_FILE.subtitle}
-        icon={<LoadingSpinner />}
-      />
-    );
-  }
-
-  // Force to be in Connections if no config is activated
-  // even by changing the URL
-  // if (!activeConfig || !schema.get(activeConfig || "")?.lastUpdate) {
-  //   if (!location.pathname.match(/\/connections/)) {
-  //     return <Redirect to={"/connections"} />;
-  //   }
-  // }
+  }, [
+    activeConfig,
+    config,
+    configuration,
+    isStoreLoaded,
+    setActiveConfig,
+    setConfiguration,
+  ]);
 
   return <>{children}</>;
 };

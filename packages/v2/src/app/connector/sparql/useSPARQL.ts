@@ -106,8 +106,7 @@ const storedBlankNodeNeighborsRequest = (blankNodes: BlankNodesMap, req: SPARQLN
   });
 };
 
-const useSPARQL = (connection: ConnectionConfig) => {
-  const [blankNodes,] = useState(new Map());
+const useSPARQL = (connection: ConnectionConfig, blankNodes: unknown) => {
   const useFetch = useGEFetch(connection);
   const url = connection.url;
 

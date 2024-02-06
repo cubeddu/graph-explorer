@@ -65,13 +65,7 @@ export default function StoreProvider({
         </SpaceBetween>
       }
     >
-      <StoreContext.Provider value={value}>
-        {/* <TopBarWithLogo>
-          <div>like tests</div>
-        </TopBarWithLogo> */}
-
-        {children}
-      </StoreContext.Provider>
+      <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
     </ContentLayout>
   );
 }
