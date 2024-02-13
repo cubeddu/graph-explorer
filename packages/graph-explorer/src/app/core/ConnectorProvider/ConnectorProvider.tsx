@@ -23,15 +23,13 @@ import { every, isEqual } from "lodash";
 export const ConnectorContext = createContext<ConnectorContextProps>({});
 
 const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
-  const config = useConfiguration();
-  console.log("🚀 ~ ConnectorProvider ~ config:", config);
-
+  const config = useRecoilValue(mergedConfigurationSelector);
   const [connector, setConnector] = useState<ConnectorContextProps>({
     explorer: undefined,
     logger: undefined,
   });
-  //  const openCypherExplorer = useOpenCypher();
-  //  const sparqlExplorer = useSPARQL(new Map());
+  // const openCypherExplorer = useOpenCypher();
+  // const sparqlExplorer = useSPARQL(new Map());
   const gremlinExplorer = useGremlin();
 
   const [prevConnection, setPrevConnection] = useState<
@@ -71,7 +69,7 @@ const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
           return gremlinExplorer;
       }
     },
-    [openCypherExplorer, sparqlExplorer, gremlinExplorer]
+    [gremlinExplorer]
   );
 
   useEffect(() => {
@@ -85,14 +83,7 @@ const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
       });
       setPrevConnection(config?.connection);
     }
-  }, [
-    config?.connection?.url,
-    config?.connection?.queryEngine,
-    prevConnection,
-    config?.connection,
-    isSameConnection,
-    getExplorer,
-  ]);
+  }, [prevConnection, isSameConnection, getExplorer]);
 
   console.log("🚀 ~ ConnectorProvider ~ connector:", connector);
 

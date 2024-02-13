@@ -5,9 +5,12 @@ import useConfiguration from "../core/ConfigurationProvider/useConfiguration";
 import useConnector from "../core/ConnectorProvider/useConnector";
 import usePrefixesUpdater from "./usePrefixesUpdater";
 import useUpdateSchema from "./useUpdateSchema";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "../core/StateProvider/configuration";
+import toast from "react-hot-toast";
 
 const useSchemaSync = (onSyncChange?: (isSyncing: boolean) => void) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
   const connector = useConnector();
 
   const updatePrefixes = usePrefixesUpdater();
@@ -17,51 +20,20 @@ const useSchemaSync = (onSyncChange?: (isSyncing: boolean) => void) => {
   const updateSchemaState = useUpdateSchema();
   return useCallback(
     async () => {
-      if (!config || !connector.explorer) {
+      if (!config) {
         return;
       }
 
       onSyncChange?.(true);
       let schema: SchemaResponse | null = null;
       try {
-        notificationId.current = enqueueNotification({
-          title: config.displayLabel || config.id,
-          message: "Updating the Database schema",
-          type: "info",
-        });
+        toast("Updating the Database schema");
 
         schema = await connector.explorer.fetchSchema();
       } catch (e) {
-        if (e.name === "AbortError") {
-          notificationId.current && clearNotification(notificationId.current);
-          enqueueNotification({
-            title: config.displayLabel || config.id,
-            message: `Fetch aborted, reached max time out ${config.connection?.fetchTimeoutMs} MS`,
-            type: "error",
-            stackable: true,
-          });
-          connector.logger?.error(
-            `[${config.displayLabel || config.id
-            }] Fetch aborted, reached max time out ${config.connection?.fetchTimeoutMs} MS `
-          );
-        }
-        notificationId.current && clearNotification(notificationId.current);
-        enqueueNotification({
-          title: config.displayLabel || config.id,
-          message: `Error while fetching schema: ${e.message}`,
-          type: "error",
-          stackable: true,
-        });
-        connector.logger?.error(
-          `[${config.displayLabel || config.id
-          }] Error while fetching schema: ${e.message}`
-        );
-        updateSchemaState(config.id);
-        onSyncChange?.(false);
-        return;
+
       }
 
-      if (!schema) return;
       if (!schema?.vertices.length) {
         notificationId.current && clearNotification(notificationId.current);
         enqueueNotification({
@@ -104,9 +76,6 @@ const useSchemaSync = (onSyncChange?: (isSyncing: boolean) => void) => {
     },
     [
       clearNotification,
-      config,
-      connector.explorer,
-      connector.logger,
       enqueueNotification,
       onSyncChange,
       updatePrefixes,

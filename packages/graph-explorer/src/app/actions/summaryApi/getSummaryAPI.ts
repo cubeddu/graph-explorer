@@ -19,14 +19,13 @@ export async function getSummaryApi({ url, slug, path }: { url: string, slug: st
         return undefined;
     }
 
-    const result = await response.json();
-    const parsedPayload = schema.safeParse(result);
-    console.log("🚀 ~ getSummaryApi ~ parsedPayload:", parsedPayload)
-    if (!parsedPayload.success) {
-        // Handle validation errors
-        logger.error({ errors: parsedPayload.error.flatten().fieldErrors }, "DEBUG getSummaryApi: parsedPayload.error");
-        return { error: "Error parsing response" };
-    }
-    logger.debug({ summaryApi: url, slug, path }, "DEBUG getSummaryApi: Success!");
-    return parsedPayload.data;
+    // const parsedPayload = schema.safeParse(result);
+    // console.log("🚀 ~ getSummaryApi ~ parsedPayload:", parsedPayload)
+    // if (!parsedPayload.success) {
+    //     // Handle validation errors
+    //     logger.error({ errors: parsedPayload.error.flatten().fieldErrors }, "DEBUG getSummaryApi: parsedPayload.error");
+    //     return { error: "Error parsing response" };
+    // }
+    // logger.debug({ summaryApi: url, slug, path }, "DEBUG getSummaryApi: Success!");
+    return response;
 }

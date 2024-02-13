@@ -8,26 +8,26 @@ import keywordSearch from "./queries/keywordSearch";
 import useGEFetch from "../useGEFetch";
 import { GraphSummary } from "./types";
 const useGremlin = () => {
-  const connection = useConfiguration()?.connection as ConnectionConfig;
-  console.log("useGremlin", connection.url);
+
   const _rawIdTypeMap = useMemo(() => {
     return new Map<string, "string" | "number">();
   }, []);
 
   const _gremlinFetch = useCallback((options) => {
     return async (queryTemplate: string) => {
+      console.log("🚀 ~ return ~ queryTemplate:", queryTemplate)
       const body = JSON.stringify({ query: queryTemplate });
       return fetch(`api/gremlin`, {
         method: "POST",
         headers: {
-          'graph-db-connection-url': connection.url,
+          'graph-db-connection-url': 'https://cole-snb-10-rdf-export-test-cluster.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182',
           'Content-Type': 'application/json',
+          'query': queryTemplate,
         },
-        body,
       });
 
     };
-  }, [connection.url]);
+  }, []);
 
   const fetchSchemaFunc = useCallback(async (options) => {
     const ops = { ...options, disableCache: true };
@@ -36,11 +36,11 @@ const useGremlin = () => {
       const response = await fetch('api/gremlin', {
         method: "GET",
         headers: {
-          'graph-db-connection-url': connection.url,
+          'graph-db-connection-url': 'https://cole-snb-10-rdf-export-test-cluster.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182',
         },
         ...ops
       });
-      summary = response.payload.graphSummary as GraphSummary || undefined;
+      summary = await response.payload.graphSummary as GraphSummary || undefined;
     } catch (e) {
 
       console.error("[Summary API]", e);
