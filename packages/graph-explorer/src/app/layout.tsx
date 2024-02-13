@@ -6,6 +6,7 @@ import StoreProvider from "./StoreProvider";
 
 import { grabConfig } from "./actions/graphExplorer/grabConfig";
 import ConnectedProvider from "./core/ConnectedProvider";
+import { MantineProvider } from "@mantine/core";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,10 +25,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ConnectedProvider config={config}>
-          {children}
-          <Toaster />
-        </ConnectedProvider>
+        <MantineProvider theme={{}}>
+          <ConnectedProvider config={config}>
+            {children}
+            <Toaster />
+          </ConnectedProvider>
+        </MantineProvider>
       </body>
     </html>
   );

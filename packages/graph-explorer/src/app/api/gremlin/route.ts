@@ -1,37 +1,49 @@
 
 import { NextResponse } from "next/server";
+import { buffer } from 'micro';
 import { getSummaryApi } from "../../actions/summaryApi/getSummaryAPI";
 
 export async function GET(request: Request) {
     const graphDBUrl = request.headers.get('graph-db-connection-url');
-    console.log("🚀 ~ GET ~ graphDBUrl:", graphDBUrl)
-    const res = await getSummaryApi({ url: graphDBUrl, slug: 'pg', path: "statistics/summary?mode=detailed" });
-    const data = await res.json()
-    if (!res.ok) {
-        return NextResponse.json({ error: "Error fetching summary" });
-    }
-    console.log("res: ", data);
 
-    return NextResponse.json(data)
+    if (!graphDBUrl) {
+        return NextResponse.json({ error: 'Missing graph-db-connection-url header' }, { status: 400 });
+    }
+
+    try {
+        const res = await getSummaryApi({ url: graphDBUrl, slug: 'pg', path: "statistics/summary?mode=detailed" });
+        return NextResponse.json(res);
+
+    } catch (error) {
+        console.error("Error in getSummaryApi:", error);
+        return NextResponse.json({ error: 'An error occurred during data fetching' }, { status: 500 });
+    }
 }
 
 export async function POST(request: Request) {
     const graphDBUrl = request.headers.get('graph-db-connection-url');
-    console.log("🚀 ~ POST ~ request.headers:", request.headers)
-    const test = request.headers.get('query');
-    const rawUrl = `${graphDBUrl}/gremlin`;
 
-    console.log("🚀 ~ POST ~ requestOptions.request.body:", test)
-    const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json", },
-        body: JSON.stringify({ gremlin: test }),
-    };
+    // Parse the request body from the ReadableStream 
+    const bufferData = await buffer(request);
+    const body = bufferData.toString();
 
+    try {
+        const jsonData = JSON.parse(body);
+        console.log("🚀 ~ POST ~ jsonData:", jsonData)
 
-    const res = await fetch(rawUrl, requestOptions)
-    const data = await res.json()
-    console.log("🚀 ~ POST ~ data:", data)
+        const rawUrl = `${graphDBUrl}/gremlin`;
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ gremlin: jsonData }),
+        };
 
-    return NextResponse.json(data)
+        const res = await fetch(rawUrl, requestOptions)
+        const data = await res.json()
+
+        return NextResponse.json(data)
+    } catch (error) {
+        console.error("Error parsing JSON or fetching:", error);
+        return NextResponse.json({ error: "An error occurred" }, { status: 500 });
+    }
 }

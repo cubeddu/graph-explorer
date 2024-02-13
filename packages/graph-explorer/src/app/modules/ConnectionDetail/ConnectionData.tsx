@@ -1,6 +1,5 @@
 import { css } from "@emotion/css";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   AdvancedList,
   AdvancedListItemType,
@@ -18,6 +17,7 @@ import useEntitiesCounts from "../../hooks/useEntitiesCounts";
 import useTextTransform from "../../hooks/useTextTransform";
 import useTranslations from "../../hooks/useTranslations";
 import defaultStyles from "./ConnectionDetail.styles";
+import { useRouter } from "next/navigation";
 
 export type VertexDetailProps = {
   classNamePrefix?: string;
@@ -25,7 +25,7 @@ export type VertexDetailProps = {
 
 const ConnectionData = ({ classNamePrefix = "ft" }: VertexDetailProps) => {
   const config = useConfiguration();
-  const navigate = useNavigate();
+  const router = useRouter();
   const styleWithTheme = useWithTheme();
   const pfx = withClassNamePrefix(classNamePrefix);
   const { totalNodes, totalEdges } = useEntitiesCounts();
@@ -72,14 +72,16 @@ const ConnectionData = ({ classNamePrefix = "ft" }: VertexDetailProps) => {
             icon={<ChevronRightIcon />}
             variant={"text"}
             size={"small"}
-            onPress={() => navigate(`/data-explorer/${encodeURIComponent(vt)}`)}
+            onPress={() =>
+              router.push(`/data-explorer/${encodeURIComponent(vt)}`)
+            }
           />
         ),
       });
     });
 
     return items;
-  }, [config, pfx, textTransform, navigate]);
+  }, [config, pfx, textTransform, router]);
 
   const [search, setSearch] = useState("");
 

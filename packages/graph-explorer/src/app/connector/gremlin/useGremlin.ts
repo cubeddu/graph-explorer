@@ -7,7 +7,12 @@ import fetchVertexTypeCounts from "./queries/fetchVertexTypeCounts";
 import keywordSearch from "./queries/keywordSearch";
 import useGEFetch from "../useGEFetch";
 import { GraphSummary } from "./types";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 const useGremlin = () => {
+  const config = useRecoilValue(mergedConfigurationSelector);
+  const graphUrl = config?.connection?.graphDbUrl;
+  console.log("🚀 ~ useGremlin ~ graphUrl:", graphUrl)
 
   const _rawIdTypeMap = useMemo(() => {
     return new Map<string, "string" | "number">();
@@ -16,14 +21,14 @@ const useGremlin = () => {
   const _gremlinFetch = useCallback((options) => {
     return async (queryTemplate: string) => {
       console.log("🚀 ~ return ~ queryTemplate:", queryTemplate)
-      const body = JSON.stringify({ query: queryTemplate });
+      const body = JSON.stringify({ queryTemplate });
       return fetch(`api/gremlin`, {
         method: "POST",
         headers: {
-          'graph-db-connection-url': 'https://cole-snb-10-rdf-export-test-cluster.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182',
+          'graph-db-connection-url': 'https://nep-export-test-1.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182',
           'Content-Type': 'application/json',
-          'query': queryTemplate,
         },
+        body,
       });
 
     };
@@ -36,7 +41,7 @@ const useGremlin = () => {
       const response = await fetch('api/gremlin', {
         method: "GET",
         headers: {
-          'graph-db-connection-url': 'https://cole-snb-10-rdf-export-test-cluster.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182',
+          'graph-db-connection-url': 'https://nep-export-test-1.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182',
         },
         ...ops
       });

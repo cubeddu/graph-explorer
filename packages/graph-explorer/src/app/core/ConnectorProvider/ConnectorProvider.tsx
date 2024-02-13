@@ -25,7 +25,7 @@ export const ConnectorContext = createContext<ConnectorContextProps>({});
 const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
   const config = useRecoilValue(mergedConfigurationSelector);
   const [connector, setConnector] = useState<ConnectorContextProps>({
-    explorer: undefined,
+    explorer: useGremlin(),
     logger: undefined,
   });
   // const openCypherExplorer = useOpenCypher();
@@ -60,7 +60,7 @@ const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
 
   const getExplorer = useCallback(
     (connection: ConnectionConfig) => {
-      switch (connection.queryEngine) {
+      switch (config?.connection.queryEngine) {
         case "openCypher":
           return openCypherExplorer;
         case "sparql":
@@ -74,16 +74,20 @@ const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
 
   useEffect(() => {
     // connector instance is only rebuilt if any connection attribute change
-    if (!isSameConnection(prevConnection, config?.connection)) {
+    setConnector({
+      explorer: getExplorer(
+        (config?.connection as ConnectionConfig) || undefined
+      ),
+      logger: defaultLogger,
+    });
+    setPrevConnection(config?.connection);
+    return () => {
       setConnector({
-        explorer: getExplorer(
-          (config?.connection as ConnectionConfig) || undefined
-        ),
-        logger: defaultLogger,
+        explorer: undefined,
+        logger: undefined,
       });
-      setPrevConnection(config?.connection);
-    }
-  }, [prevConnection, isSameConnection, getExplorer]);
+    };
+  }, []);
 
   console.log("🚀 ~ ConnectorProvider ~ connector:", connector);
 
