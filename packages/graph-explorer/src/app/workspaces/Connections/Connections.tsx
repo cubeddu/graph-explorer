@@ -31,11 +31,8 @@ const Connections = ({ classNamePrefix = "ft" }: ConnectionsProps) => {
   const pfx = withClassNamePrefix(classNamePrefix);
 
   const config = useRecoilValue(mergedConfigurationSelector);
-  console.log("🚀 ~ Connections ~ config:", config);
   const activeConfig = useRecoilValue(activeConfigurationAtom);
-  console.log("🚀 ~ Connections ~ activeConfig:", activeConfig);
   const configuration = useRecoilValue(configurationAtom);
-  console.log("🚀 ~ Connections ~ configuration:", configuration);
   const [isModalOpen, setModal] = useState(configuration.size === 0);
   const [isSyncing, setSyncing] = useState(false);
 
@@ -48,6 +45,7 @@ const Connections = ({ classNamePrefix = "ft" }: ConnectionsProps) => {
     }
 
     updateSchema();
+    return () => {};
   }, [activeConfig, config?.schema?.triedToSync, updateSchema]);
 
   return (

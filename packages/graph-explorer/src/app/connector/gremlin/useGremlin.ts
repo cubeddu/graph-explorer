@@ -46,9 +46,9 @@ const useGremlin = () => {
 
     if (!response.ok) {
       summary = undefined;
+    } else {
+      summary = await response.payload.graphSummary as GraphSummary || undefined;
     }
-    summary = await response.payload.graphSummary as GraphSummary || undefined;
-
     return fetchSchema(_gremlinFetch(ops), summary);
   }, [_gremlinFetch, connectionUrl]);
 
