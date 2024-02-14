@@ -7,6 +7,7 @@ import { useRecoilValue } from "recoil";
 import DEFAULT_ICON_URL from "../../utils/defaultIconUrl";
 import { mergedConfigurationSelector } from "../StateProvider/configuration";
 import type { ConfigurationContextProps } from "./types";
+import useConfiguration from "./useConfiguration";
 
 export const ConfigurationContext = createContext<
   ConfigurationContextProps | undefined
@@ -32,7 +33,8 @@ const getDefaultEdgeTypeConfig = (edgeType: string) => ({
 const ConfigurationProvider = ({
   children,
 }: PropsWithChildren<ConfigurationProviderProps>) => {
-  const configuration = useRecoilValue(mergedConfigurationSelector);
+  const configuration = useConfiguration();
+  console.log("🚀 ~ configuration:", configuration);
 
   const getVertexTypeConfig: ConfigurationContextProps["getVertexTypeConfig"] =
     useCallback(

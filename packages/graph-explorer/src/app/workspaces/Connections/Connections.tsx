@@ -66,7 +66,7 @@ const Connections = ({ classNamePrefix = "ft" }: ConnectionsProps) => {
           <Link
             href={
               !activeConfig || !config?.schema?.lastUpdate
-                ? "/connections"
+                ? "/"
                 : "/graph-explorer"
             }
           >

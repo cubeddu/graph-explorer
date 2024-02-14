@@ -15,6 +15,7 @@ import {
 import { schemaAtom } from "./StateProvider/schema";
 import useLoadStore from "./StateProvider/useLoadStore";
 import { CONNECTIONS_OP } from "../modules/CreateConnection/CreateConnection";
+import { usePathname, useRouter } from "next/navigation";
 
 export type AppLoadingProps = {
   config?: RawConfiguration;
@@ -35,6 +36,8 @@ const AppStatusLoader = ({
   config,
   children,
 }: PropsWithChildren<AppLoadingProps>) => {
+  const router = useRouter();
+  const pathname = usePathname();
   useLoadStore();
   const isStoreLoaded = useRecoilValue(isStoreLoadedAtom);
   const [activeConfig, setActiveConfig] = useRecoilState(
@@ -107,6 +110,34 @@ const AppStatusLoader = ({
     setActiveConfig,
     setConfiguration,
   ]);
+  // Wait until state is recovered from the indexed DB
+  if (!isStoreLoaded) {
+    return (
+      <PanelEmptyState
+        title={STATUS.STORE.title}
+        subtitle={STATUS.STORE.subtitle}
+        icon={<LoadingSpinner />}
+      />
+    );
+  }
+
+  // Loading from config file if exists
+  if (configuration.size === 0 && !!config) {
+    return (
+      <PanelEmptyState
+        title={STATUS.CONFIG_FILE.title}
+        subtitle={STATUS.CONFIG_FILE.subtitle}
+        icon={<LoadingSpinner />}
+      />
+    );
+  }
+
+  if (!activeConfig || !schema.get(activeConfig || "")?.lastUpdate) {
+    if (!pathname.match(/\/connections/)) {
+      router.push("/connections");
+      return null; // Optional: Prevent rendering anything until redirect
+    }
+  }
 
   return <>{children}</>;
 };

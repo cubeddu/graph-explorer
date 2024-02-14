@@ -10,9 +10,9 @@ import { GraphSummary } from "./types";
 import { useRecoilValue } from "recoil";
 import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 const useGremlin = () => {
-  const config = useRecoilValue(mergedConfigurationSelector);
-  const graphUrl = config?.connection?.graphDbUrl;
-  console.log("🚀 ~ useGremlin ~ graphUrl:", graphUrl)
+  const config = useConfiguration()
+  console.log("🚀 ~ useGremlin ~ config:", config)
+
 
   const _rawIdTypeMap = useMemo(() => {
     return new Map<string, "string" | "number">();

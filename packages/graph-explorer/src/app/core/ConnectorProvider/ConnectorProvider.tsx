@@ -24,8 +24,9 @@ export const ConnectorContext = createContext<ConnectorContextProps>({});
 
 const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
   const config = useRecoilValue(mergedConfigurationSelector);
+  console.log("🚀 ~ ConnectorProvider ~ config:", config);
   const [connector, setConnector] = useState<ConnectorContextProps>({
-    explorer: useGremlin(),
+    explorer: undefined,
     logger: undefined,
   });
   // const openCypherExplorer = useOpenCypher();
