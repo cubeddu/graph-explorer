@@ -10,6 +10,8 @@ import CommonPrefixes from "./CommonPrefixes";
 import GeneratedPrefixes from "./GeneratedPrefixes";
 import defaultStyles from "./Namespaces.style";
 import UserPrefixes from "./UserPrefixes";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type EdgesStylingProps = Omit<
   ModuleContainerHeaderProps,
@@ -17,7 +19,8 @@ export type EdgesStylingProps = Omit<
 >;
 
 const Namespaces = (headerProps: EdgesStylingProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const [nsType, setNsType] = useState("auto");
 
   const nsOptions = useMemo(() => {

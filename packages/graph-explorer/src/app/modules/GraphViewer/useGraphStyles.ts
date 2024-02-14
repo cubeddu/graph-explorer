@@ -5,6 +5,8 @@ import type { GraphProps } from "../../components";
 import colorizeSvg from "../../components/utils/canvas/colorizeSvg";
 import { useConfiguration } from "../../core";
 import useTextTransform from "../../hooks/useTextTransform";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 const ICONS_CACHE: Map<string, string> = new Map();
 const LINE_PATTERN = {
@@ -14,7 +16,8 @@ const LINE_PATTERN = {
 };
 
 const useGraphStyles = () => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const textTransform = useTextTransform();
   const [styles, setStyles] = useState<GraphProps["styles"]>({});
 

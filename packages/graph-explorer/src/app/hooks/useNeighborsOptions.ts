@@ -2,9 +2,12 @@ import { useMemo } from "react";
 import { Vertex } from "../../@types/entities";
 import useConfiguration from "../core/ConfigurationProvider/useConfiguration";
 import useTextTransform from "./useTextTransform";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "../core/StateProvider/configuration";
 
 const useNeighborsOptions = (vertex: Vertex) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const textTransform = useTextTransform();
 
   return useMemo(() => {

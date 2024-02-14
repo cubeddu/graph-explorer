@@ -1,14 +1,16 @@
 import sortBy from "lodash/sortBy";
 import { useCallback, useMemo } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { EdgeIcon, VertexIcon } from "../../components";
 import { useConfiguration } from "../../core";
 import { edgesTypesFilteredAtom } from "../../core/StateProvider/edges";
 import { nodesTypesFilteredAtom } from "../../core/StateProvider/nodes";
 import useTextTransform from "../../hooks/useTextTransform";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 const useFiltersConfig = () => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const textTransform = useTextTransform();
 
   const [nodesTypesFiltered, setNodesTypesFiltered] = useRecoilState(

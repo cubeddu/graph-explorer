@@ -35,6 +35,8 @@ import {
   nodesOutOfFocusIdsAtom,
   nodesSelectedIdsAtom,
 } from "../../core/StateProvider/nodes";
+import { mergedConfigurationSelector } from "../../core/StateProvider/configuration";
+
 import { userLayoutAtom } from "../../core/StateProvider/userPreferences";
 import useWithTheme from "../../core/ThemeProvider/useWithTheme";
 import fade from "../../core/ThemeProvider/utils/fade";
@@ -172,7 +174,8 @@ const GraphViewer = ({
     [setEdgesSelectedIds]
   );
 
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const [legendOpen, setLegendOpen] = useState(false);
   const { onZoomIn, onZoomOut, onSaveScreenshot } =
     useGraphGlobalActions(graphRef);

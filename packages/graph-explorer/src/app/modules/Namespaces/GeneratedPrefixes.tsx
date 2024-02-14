@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { AdvancedList, NamespaceIcon, PanelEmptyState } from "../../components";
 import { useConfiguration, useWithTheme } from "../../core";
 import defaultStyles from "./NsType.styles";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type GeneratedPrefixesProps = {
   classNamePrefix?: string;
@@ -11,7 +13,8 @@ const GeneratedPrefixes = ({
   classNamePrefix = "ft",
 }: GeneratedPrefixesProps) => {
   const styleWithTheme = useWithTheme();
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const [search, setSearch] = useState("");
 
   const items = useMemo(() => {

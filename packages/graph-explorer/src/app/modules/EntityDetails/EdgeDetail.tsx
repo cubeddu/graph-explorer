@@ -24,6 +24,8 @@ import useDisplayNames from "../../hooks/useDisplayNames";
 import useTextTransform from "../../hooks/useTextTransform";
 import { formatDate } from "../../utils";
 import defaultStyles from "./EntityDetail.styles";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type EdgeDetailProps = {
   classNamePrefix?: string;
@@ -38,7 +40,8 @@ const EdgeDetail = ({
   sourceVertex,
   targetVertex,
 }: EdgeDetailProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const styleWithTheme = useWithTheme();
   const pfx = withClassNamePrefix(classNamePrefix);
 

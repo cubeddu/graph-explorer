@@ -22,6 +22,7 @@ import {
 } from "../core/StateProvider/nodes";
 
 import useDeepMemo from "./useDeepMemo";
+import { mergedConfigurationSelector } from "../core/StateProvider/configuration";
 
 type ProcessedEntities = {
   nodes: Vertex[];
@@ -37,7 +38,7 @@ const useEntities = ({ disableFilters }: { disableFilters?: boolean } = {}): [
   SetterOrUpdater<Entities>,
   UseEntitiesProps
 ] => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
   const filteredNodesIds = useRecoilValue(nodesFilteredIdsAtom);
   const filteredEdgesIds = useRecoilValue(edgesFilteredIdsAtom);
   const nodes = useRecoilValue(nodesSelector);

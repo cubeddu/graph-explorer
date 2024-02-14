@@ -38,6 +38,8 @@ import NodeDetail from "../EntityDetails/NodeDetail";
 import defaultStyles from "./KeywordSearch.styles";
 import toAdvancedList from "./toAdvancedList";
 import useKeywordSearch from "./useKeywordSearch";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type KeywordSearchProps = {
   classNamePrefix?: string;
@@ -48,7 +50,8 @@ const KeywordSearch = ({
   classNamePrefix = "ft",
   className,
 }: KeywordSearchProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const t = useTranslations();
   const fetchNode = useFetchNode();
   const [entities, setEntities] = useEntities();

@@ -1,6 +1,6 @@
 import { Modal } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
-import { useRecoilCallback } from "recoil";
+import { useRecoilCallback, useRecoilValue } from "recoil";
 import {
   AddIcon,
   AdvancedList,
@@ -20,6 +20,7 @@ import {
 import { schemaAtom } from "../../core/StateProvider/schema";
 import defaultStyles from "./NsType.styles";
 import modalDefaultStyles from "./NsTypeModal.styles";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type UserPrefixesProps = {
   classNamePrefix?: string;
@@ -33,7 +34,8 @@ type PrefixForm = {
 const UserPrefixes = ({ classNamePrefix = "ft" }: UserPrefixesProps) => {
   const styleWithTheme = useWithTheme();
   const pfx = withClassNamePrefix(classNamePrefix);
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const [search, setSearch] = useState("");
   const [opened, setOpened] = useState(false);
 

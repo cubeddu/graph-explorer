@@ -3,9 +3,12 @@ import { useQuery } from "react-query";
 import { useConfiguration } from "../core";
 import useConnector from "../core/ConnectorProvider/useConnector";
 import useUpdateSchema from "./useUpdateSchema";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "../core/StateProvider/configuration";
 
 const useUpdateVertexTypeCounts = (vertexType?: string) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const connector = useConnector();
 
   const vertexConfig = useMemo(() => {

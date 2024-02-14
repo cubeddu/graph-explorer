@@ -1,8 +1,10 @@
 import { useMemo } from "react";
-import { useConfiguration } from "../core";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "../core/StateProvider/configuration";
 
 const useEntitiesCounts = () => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
 
   const totalNodes = useMemo(() => {
     if (config?.totalVertices != null) {

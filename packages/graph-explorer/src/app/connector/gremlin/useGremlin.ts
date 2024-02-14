@@ -35,19 +35,20 @@ const useGremlin = () => {
   const fetchSchemaFunc = useCallback(async (options) => {
     const ops = { ...options, disableCache: true };
     let summary;
-    try {
-      const response = await fetch('api/gremlin', {
-        method: "GET",
-        headers: {
-          'graph-db-connection-url': connectionUrl,
-        },
-        ...ops
-      });
-      summary = await response.payload.graphSummary as GraphSummary || undefined;
-    } catch (e) {
 
-      console.error("[Summary API]", e);
+    const response = await fetch('api/gremlin', {
+      method: "GET",
+      headers: {
+        'graph-db-connection-url': connectionUrl,
+      },
+      ...ops
+    });
+
+    if (!response.ok) {
+      summary = undefined;
     }
+    summary = await response.payload.graphSummary as GraphSummary || undefined;
+
     return fetchSchema(_gremlinFetch(ops), summary);
   }, [_gremlinFetch, connectionUrl]);
 

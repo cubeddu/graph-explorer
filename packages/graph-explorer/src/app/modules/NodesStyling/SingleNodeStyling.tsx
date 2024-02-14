@@ -32,6 +32,7 @@ import { LINE_STYLE_OPTIONS } from "./lineStyling";
 import { NODE_SHAPE } from "./nodeShape";
 import defaultStyles from "./SingleNodeStyling.style";
 import modalDefaultStyles from "./SingleNodeStylingModal.style";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type SingleNodeStylingProps = {
   classNamePrefix?: string;
@@ -57,7 +58,8 @@ const SingleNodeStyling = ({
   onOpen,
   onClose,
 }: SingleNodeStylingProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const t = useTranslations();
   const styleWithTheme = useWithTheme();
   const pfx = withClassNamePrefix(classNamePrefix);

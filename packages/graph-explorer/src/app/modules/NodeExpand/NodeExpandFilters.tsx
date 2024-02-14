@@ -10,6 +10,8 @@ import {
 import { useConfiguration, withClassNamePrefix } from "../../core";
 import useTextTransform from "../../hooks/useTextTransform";
 import useTranslations from "../../hooks/useTranslations";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type NodeExpandFilter = {
   name: string;
@@ -36,7 +38,8 @@ const NodeExpandFilters = ({
   limit,
   onLimitChange,
 }: NodeExpandFiltersProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const t = useTranslations();
   const textTransform = useTextTransform();
   const pfx = withClassNamePrefix(classNamePrefix);

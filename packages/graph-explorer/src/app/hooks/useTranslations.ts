@@ -5,6 +5,8 @@ import { useConfiguration } from "../core";
 import gremlinTs from "./translations/gremlin-translations.json";
 import sparqlTs from "./translations/sparql-translations.json";
 import openCypherTs from "./translations/openCypher-translations.json";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "../core/StateProvider/configuration";
 
 const ts: Record<string, Record<string, string>> = {
   gremlin: flatten(gremlinTs),
@@ -13,7 +15,8 @@ const ts: Record<string, Record<string, string>> = {
 };
 
 const useTranslations = () => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const engine = config?.connection?.queryEngine || "gremlin";
 
   return useCallback(

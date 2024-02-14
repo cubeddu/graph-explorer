@@ -9,12 +9,15 @@ import useConnector from "../../core/ConnectorProvider/useConnector";
 import useDebounceValue from "../../hooks/useDebounceValue";
 import usePrefixesUpdater from "../../hooks/usePrefixesUpdater";
 import useTextTransform from "../../hooks/useTextTransform";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export interface PromiseWithCancel<T> extends Promise<T> {
   cancel?: () => void;
 }
 const useKeywordSearch = ({ isOpen }: { isOpen: boolean }) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const connector = useConnector();
 
   const [searchTerm, setSearchTerm] = useState("");

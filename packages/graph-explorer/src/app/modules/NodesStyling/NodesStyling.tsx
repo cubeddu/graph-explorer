@@ -1,3 +1,4 @@
+import { useRecoilValue } from "recoil";
 import {
   ModuleContainer,
   ModuleContainerHeader,
@@ -7,6 +8,7 @@ import { useConfiguration, useWithTheme } from "../../core";
 import useTranslations from "../../hooks/useTranslations";
 import defaultStyles from "./NodesStyling.style";
 import SingleNodeStyling from "./SingleNodeStyling";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type NodesStylingProps = Omit<
   ModuleContainerHeaderProps,
@@ -21,7 +23,8 @@ const NodesStyling = ({
   onNodeCustomize,
   ...headerProps
 }: NodesStylingProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const t = useTranslations();
   const styleWithTheme = useWithTheme();
 

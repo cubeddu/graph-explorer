@@ -17,6 +17,8 @@ import useTranslations from "../../hooks/useTranslations";
 import NeighborsList from "../common/NeighborsList/NeighborsList";
 import defaultStyles from "./NodeExpandContent.styles";
 import NodeExpandFilters, { NodeExpandFilter } from "./NodeExpandFilters";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type NodeExpandContentProps = {
   classNamePrefix?: string;
@@ -27,7 +29,8 @@ const NodeExpandContent = ({
   classNamePrefix = "ft",
   vertex,
 }: NodeExpandContentProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const t = useTranslations();
   const expandNode = useExpandNode();
   const styleWithTheme = useWithTheme();

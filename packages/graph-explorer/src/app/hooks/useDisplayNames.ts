@@ -2,13 +2,15 @@ import { useCallback } from "react";
 import { Edge, Vertex } from "../../@types/entities";
 import { useConfiguration } from "../core";
 import useTextTransform from "./useTextTransform";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "../core/StateProvider/configuration";
 
 const isVertex = (vOrE: any): vOrE is Vertex => {
   return vOrE.data.neighborsCount != null;
 };
 
 const useDisplayNames = () => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
   const textTransform = useTextTransform();
 
   return useCallback(

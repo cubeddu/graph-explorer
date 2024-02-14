@@ -29,14 +29,17 @@ import useDisplayNames from "../../../hooks/useDisplayNames";
 import useTextTransform from "../../../hooks/useTextTransform";
 import useTranslations from "../../../hooks/useTranslations";
 import { recoilDiffSets } from "../../../utils/recoilState";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 type ToggleVertex = Vertex & { __is_visible: boolean };
 
+// eslint-disable-next-line react/display-name
 const NodesTabular = forwardRef<TabularInstance<any>, any>((_props, ref) => {
   const t = useTranslations();
   const nodes = useRecoilValue(nodesAtom);
   const setNodesOut = useSetRecoilState(nodesOutOfFocusIdsAtom);
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const [hiddenNodesIds, setHiddenNodesIds] =
     useRecoilState(nodesHiddenIdsAtom);
   const [selectedNodesIds, setSelectedNodesIds] =

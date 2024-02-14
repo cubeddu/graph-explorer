@@ -41,6 +41,7 @@ import NodesStyling from "@/app/modules/NodesStyling/NodesStyling";
 import EdgesStyling from "@/app/modules/EdgesStyling/EdgesStyling";
 import Namespaces from "@/app/modules/Namespaces/Namespaces";
 import { usePrevious } from "@/app/hooks";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type GraphViewProps = {
   classNamePrefix?: string;
@@ -60,7 +61,8 @@ const RESIZE_ENABLE_TOP = {
 const GraphExplorer = ({ classNamePrefix = "ft" }: GraphViewProps) => {
   const styleWithTheme = useWithTheme();
   const pfx = withClassNamePrefix(classNamePrefix);
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const t = useTranslations();
   const hasNamespaces = config?.connection?.queryEngine === "sparql";
   const [userLayout, setUserLayout] = useRecoilState(userLayoutAtom);

@@ -1,12 +1,14 @@
 import { useEffect } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import useConfiguration from "../../core/ConfigurationProvider/useConfiguration";
 import { edgesTypesFilteredAtom } from "../../core/StateProvider/edges";
 import { nodesTypesFilteredAtom } from "../../core/StateProvider/nodes";
 import equalSet from "../../utils/set/equal";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 const useGraphViewerInit = () => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const setNodesTypes = useSetRecoilState(nodesTypesFilteredAtom);
   const setEdgesTypes = useSetRecoilState(edgesTypesFilteredAtom);
 

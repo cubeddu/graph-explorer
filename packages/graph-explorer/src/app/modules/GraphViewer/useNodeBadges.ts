@@ -5,9 +5,11 @@ import { useConfiguration } from "../../core";
 import { nodesAtom } from "../../core/StateProvider/nodes";
 import useDisplayNames from "../../hooks/useDisplayNames";
 import useTextTransform from "../../hooks/useTextTransform";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 const useNodeBadges = () => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const textTransform = useTextTransform();
   const getDisplayNames = useDisplayNames();
   const nodes = useRecoilValue(nodesAtom);

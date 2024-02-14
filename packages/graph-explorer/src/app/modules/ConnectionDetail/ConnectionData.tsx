@@ -18,13 +18,16 @@ import useTextTransform from "../../hooks/useTextTransform";
 import useTranslations from "../../hooks/useTranslations";
 import defaultStyles from "./ConnectionDetail.styles";
 import { useRouter } from "next/navigation";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type VertexDetailProps = {
   classNamePrefix?: string;
 };
 
 const ConnectionData = ({ classNamePrefix = "ft" }: VertexDetailProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const router = useRouter();
   const styleWithTheme = useWithTheme();
   const pfx = withClassNamePrefix(classNamePrefix);

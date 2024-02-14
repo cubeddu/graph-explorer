@@ -1,3 +1,4 @@
+import { useRecoilValue } from "recoil";
 import {
   ModuleContainer,
   ModuleContainerHeader,
@@ -7,6 +8,7 @@ import { useConfiguration, useWithTheme } from "../../core";
 import useTranslations from "../../hooks/useTranslations";
 import defaultStyles from "./EdgesStyling.style";
 import SingleEdgeStyling from "./SingleEdgeStyling";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type EdgesStylingProps = Omit<
   ModuleContainerHeaderProps,
@@ -21,7 +23,8 @@ const EdgesStyling = ({
   onEdgeCustomize,
   ...headerProps
 }: EdgesStylingProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const styleWithTheme = useWithTheme();
   const t = useTranslations();
 

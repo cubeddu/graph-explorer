@@ -25,6 +25,7 @@ import {
 import { LINE_STYLE_OPTIONS } from "./lineStyling";
 import defaultStyles from "./SingleEdgeStyling.style";
 import modalDefaultStyles from "./SingleEdgeStylingModal.style";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type SingleEdgeStylingProps = {
   classNamePrefix?: string;
@@ -41,7 +42,8 @@ const SingleEdgeStyling = ({
   onOpen,
   onClose,
 }: SingleEdgeStylingProps) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const t = useTranslations();
   const styleWithTheme = useWithTheme();
   const pfx = withClassNamePrefix(classNamePrefix);

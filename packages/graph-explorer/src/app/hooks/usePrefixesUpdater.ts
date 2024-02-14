@@ -1,12 +1,14 @@
 import { useCallback } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useNotification } from "../components/NotificationProvider";
 import { useConfiguration } from "../core";
 import { schemaAtom } from "../core/StateProvider/schema";
 import generatePrefixes from "../utils/generatePrefixes";
+import { mergedConfigurationSelector } from "../core/StateProvider/configuration";
 
 const usePrefixesUpdater = () => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const setSchema = useSetRecoilState(schemaAtom);
   const { enqueueNotification } = useNotification();
 

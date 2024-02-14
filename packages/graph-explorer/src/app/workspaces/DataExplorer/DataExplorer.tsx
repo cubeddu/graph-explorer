@@ -4,7 +4,7 @@ import clone from "lodash/clone";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Vertex } from "../../../@types/entities";
 import {
   CheckIcon,
@@ -51,6 +51,7 @@ import {
   useSearchParams,
   useRouter,
 } from "next/navigation";
+import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 
 export type ConnectionsProps = {
   classNamePrefix?: string;
@@ -68,7 +69,8 @@ const DataExplorer = ({ classNamePrefix = "ft" }: ConnectionsProps) => {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+
   const t = useTranslations();
   const connector = useConnector();
   const fetchNode = useFetchNode();
