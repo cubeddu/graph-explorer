@@ -13,6 +13,7 @@ import {
 import {
   activeConfigurationAtom,
   configurationAtom,
+  mergedConfigurationSelector,
 } from "../../core/StateProvider/configuration";
 import useSchemaSync from "../../hooks/useSchemaSync";
 import AvailableConnections from "../../modules/AvailableConnections";
@@ -29,9 +30,12 @@ const Connections = ({ classNamePrefix = "ft" }: ConnectionsProps) => {
   const styleWithTheme = useWithTheme();
   const pfx = withClassNamePrefix(classNamePrefix);
 
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+  console.log("🚀 ~ Connections ~ config:", config);
   const activeConfig = useRecoilValue(activeConfigurationAtom);
+  console.log("🚀 ~ Connections ~ activeConfig:", activeConfig);
   const configuration = useRecoilValue(configurationAtom);
+  console.log("🚀 ~ Connections ~ configuration:", configuration);
   const [isModalOpen, setModal] = useState(configuration.size === 0);
   const [isSyncing, setSyncing] = useState(false);
 

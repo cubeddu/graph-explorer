@@ -7,8 +7,8 @@ const StateProvider = ({
 }: PropsWithChildren<Record<string, unknown>>) => {
   return (
     <RecoilRoot>
-      {children}
       <StateDebug />
+      {children}
     </RecoilRoot>
   );
 };

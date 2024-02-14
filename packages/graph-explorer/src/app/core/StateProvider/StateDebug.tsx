@@ -43,6 +43,9 @@ const StateDebug = () => {
       prevUpdates.current[node.key] = snapshot.getLoadable(node).contents;
     }
     console.groupEnd();
+    return () => {
+      prevUpdates.current = {};
+    };
   }, [snapshot]);
 
   return null;

@@ -10,9 +10,10 @@ import { GraphSummary } from "./types";
 import { useRecoilValue } from "recoil";
 import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 const useGremlin = () => {
-  const config = useConfiguration()
+  const config = useRecoilValue(mergedConfigurationSelector);
   console.log("🚀 ~ useGremlin ~ config:", config)
-
+  const connectionUrl = config?.connection?.url as string;
+  console.log("🚀 ~ useGremlin ~ connectionUrl:", connectionUrl)
 
   const _rawIdTypeMap = useMemo(() => {
     return new Map<string, "string" | "number">();
@@ -20,19 +21,20 @@ const useGremlin = () => {
 
   const _gremlinFetch = useCallback((options) => {
     return async (queryTemplate: string) => {
+
       console.log("🚀 ~ return ~ queryTemplate:", queryTemplate)
       const body = JSON.stringify({ queryTemplate });
       return fetch(`api/gremlin`, {
         method: "POST",
         headers: {
-          'graph-db-connection-url': 'https://nep-export-test-1.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182',
+          'graph-db-connection-url': connectionUrl,
           'Content-Type': 'application/json',
         },
         body,
       });
 
     };
-  }, []);
+  }, [connectionUrl]);
 
   const fetchSchemaFunc = useCallback(async (options) => {
     const ops = { ...options, disableCache: true };
@@ -41,7 +43,7 @@ const useGremlin = () => {
       const response = await fetch('api/gremlin', {
         method: "GET",
         headers: {
-          'graph-db-connection-url': 'https://nep-export-test-1.cluster-cjiepzx2kerx.us-west-2.neptune.amazonaws.com:8182',
+          'graph-db-connection-url': connectionUrl,
         },
         ...ops
       });
@@ -51,7 +53,7 @@ const useGremlin = () => {
       console.error("[Summary API]", e);
     }
     return fetchSchema(_gremlinFetch(ops), summary);
-  }, [_gremlinFetch]);
+  }, [_gremlinFetch, connectionUrl]);
 
   const fetchVertexCountsByType = useCallback((req, options) => {
     return fetchVertexTypeCounts(_gremlinFetch(options), req);
