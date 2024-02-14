@@ -35,7 +35,6 @@ const ConfigurationProvider = ({
 }: PropsWithChildren<ConfigurationProviderProps>) => {
   const configuration = useConfiguration();
   console.log("🚀 ~ configuration:", configuration);
-
   const getVertexTypeConfig: ConfigurationContextProps["getVertexTypeConfig"] =
     useCallback(
       (vertexType) => {

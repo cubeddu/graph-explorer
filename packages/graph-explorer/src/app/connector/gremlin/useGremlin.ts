@@ -11,9 +11,7 @@ import { useRecoilValue } from "recoil";
 import { mergedConfigurationSelector } from "@/app/core/StateProvider/configuration";
 const useGremlin = () => {
   const config = useRecoilValue(mergedConfigurationSelector);
-  console.log("🚀 ~ useGremlin ~ config:", config)
   const connectionUrl = config?.connection?.url as string;
-  console.log("🚀 ~ useGremlin ~ connectionUrl:", connectionUrl)
 
   const _rawIdTypeMap = useMemo(() => {
     return new Map<string, "string" | "number">();
@@ -21,9 +19,7 @@ const useGremlin = () => {
 
   const _gremlinFetch = useCallback((options) => {
     return async (queryTemplate: string) => {
-
-      console.log("🚀 ~ return ~ queryTemplate:", queryTemplate)
-      const body = JSON.stringify({ queryTemplate });
+      const body = JSON.stringify({ query: queryTemplate });
       return fetch(`api/gremlin`, {
         method: "POST",
         headers: {

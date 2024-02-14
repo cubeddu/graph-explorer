@@ -132,12 +132,12 @@ const AppStatusLoader = ({
     );
   }
 
-  if (!activeConfig || !schema.get(activeConfig || "")?.lastUpdate) {
-    if (!pathname.match(/\/connections/)) {
-      router.push("/connections");
-      return null; // Optional: Prevent rendering anything until redirect
-    }
-  }
+  // if (!activeConfig || !schema.get(activeConfig || "")?.lastUpdate) {
+  //   if (!pathname.match(/\/connections/)) {
+  //     router.push("/connections");
+  //     return null; // Optional: Prevent rendering anything until redirect
+  //   }
+  // }
 
   return <>{children}</>;
 };

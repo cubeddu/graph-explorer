@@ -24,8 +24,6 @@ export const ConnectorContext = createContext<ConnectorContextProps>({});
 
 const ConnectorProvider = ({ children }: PropsWithChildren<any>) => {
   const config = useRecoilValue(mergedConfigurationSelector);
-  console.log("🚀 ~ ConnectorProvider ~ config:", config?.connection?.url);
-
   const [connector, setConnector] = useState<ConnectorContextProps>({
     explorer: useGremlin(),
     logger: undefined,

@@ -6,10 +6,15 @@ import useConnector from "../core/ConnectorProvider/useConnector";
 import usePrefixesUpdater from "./usePrefixesUpdater";
 import useUpdateSchema from "./useUpdateSchema";
 import toast from "react-hot-toast";
+import { useRecoilValue } from "recoil";
+import { mergedConfigurationSelector } from "../core/StateProvider/configuration";
 
 const useSchemaSync = (onSyncChange?: (isSyncing: boolean) => void) => {
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+  console.log("🚀 ~ useSchemaSync ~ config:", config)
+  // TODO: this connector is bringing the explorer as e
   const connector = useConnector();
+  console.log("🚀 ~ useSchemaSync ~ connector:", connector)
 
   const updatePrefixes = usePrefixesUpdater();
   const { enqueueNotification, clearNotification } = useNotification();

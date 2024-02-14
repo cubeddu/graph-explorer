@@ -29,7 +29,6 @@ export async function graphExplorerFetch(request: { body: { uri: any; options: a
     }
 
     // Fetch data and cache if needed
-    console.log("🚀 ~ graphExplorerFetch ~ headerList:", headerList)
     const response = await fetch(uri, { headers: headerList });
     const data = await response.json();
     if (!options?.disableCache) {

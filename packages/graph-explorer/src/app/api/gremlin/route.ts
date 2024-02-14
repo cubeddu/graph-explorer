@@ -23,19 +23,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     const graphDBUrl = request.headers.get('graph-db-connection-url');
 
-    // Parse the request body from the ReadableStream 
-    const bufferData = await buffer(request);
-    const body = bufferData.toString();
-
     try {
-        const jsonData = JSON.parse(body);
+        const jsonData = await request.json();
         console.log("🚀 ~ POST ~ jsonData:", jsonData)
 
         const rawUrl = `${graphDBUrl}/gremlin`;
         const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ gremlin: jsonData }),
+            body: JSON.stringify({ gremlin: jsonData.query }),
         };
 
         const res = await fetch(rawUrl, requestOptions)
