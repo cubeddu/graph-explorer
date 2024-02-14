@@ -1,6 +1,8 @@
+"use client";
+
 import { Modal } from "@mantine/core";
 import { useCallback, useState } from "react";
-import { useRecoilCallback } from "recoil";
+import { useRecoilCallback, useRecoilValue } from "recoil";
 import {
   Chip,
   DatabaseIcon,
@@ -20,6 +22,7 @@ import {
 import {
   activeConfigurationAtom,
   configurationAtom,
+  mergedConfigurationSelector,
 } from "../../core/StateProvider/configuration";
 import { schemaAtom } from "../../core/StateProvider/schema";
 import useSchemaSync from "../../hooks/useSchemaSync";
@@ -67,7 +70,9 @@ const HEADER_ACTIONS = (isSync: boolean, isFileBased: boolean) => [
 const ConnectionDetail = ({ isSync, onSyncChange }: ConnectionDetailProps) => {
   const styleWithTheme = useWithTheme();
   const pfx = withClassNamePrefix("ft");
-  const config = useConfiguration();
+  const config = useRecoilValue(mergedConfigurationSelector);
+  console.log("🚀 ~ ConnectionDetail ~ config:", config);
+
   const t = useTranslations();
   const [edit, setEdit] = useState(false);
 

@@ -11,15 +11,10 @@ import { mergedConfigurationSelector } from "../core/StateProvider/configuration
 
 const useSchemaSync = (onSyncChange?: (isSyncing: boolean) => void) => {
   const config = useRecoilValue(mergedConfigurationSelector);
-  console.log("🚀 ~ useSchemaSync ~ config:", config)
-  // TODO: this connector is bringing the explorer as e
   const connector = useConnector();
-  console.log("🚀 ~ useSchemaSync ~ connector:", connector)
-
   const updatePrefixes = usePrefixesUpdater();
-  const { enqueueNotification, clearNotification } = useNotification();
-  const notificationId = useRef<string | null>(null);
 
+  const notificationId = useRef<string | null>(null);
   const updateSchemaState = useUpdateSchema();
   return useCallback(
     async () => {
@@ -30,30 +25,18 @@ const useSchemaSync = (onSyncChange?: (isSyncing: boolean) => void) => {
       onSyncChange?.(true);
       let schema: SchemaResponse | null = null;
       try {
-        toast("Updating the Database schema", { icon: "🔄" });
+        toast("Updating the Database schema");
 
         schema = await connector.explorer.fetchSchema();
       } catch (e) {
         if (e.name === "AbortError") {
-          notificationId.current && clearNotification(notificationId.current);
-          enqueueNotification({
-            title: config.displayLabel || config.id,
-            message: `Fetch aborted, reached max time out ${config.connection?.fetchTimeoutMs} MS`,
-            type: "error",
-            stackable: true,
-          });
+          toast.error(`Fetch aborted, reached max time out ${config.connection?.fetchTimeoutMs} MS`)
           connector.logger?.error(
             `[${config.displayLabel || config.id
             }] Fetch aborted, reached max time out ${config.connection?.fetchTimeoutMs} MS `
           );
         }
-        notificationId.current && clearNotification(notificationId.current);
-        enqueueNotification({
-          title: config.displayLabel || config.id,
-          message: `Error while fetching schema: ${e.message}`,
-          type: "error",
-          stackable: true,
-        });
+        toast.error(`Error while fetching schema: ${e.message}`)
         connector.logger?.error(
           `[${config.displayLabel || config.id
           }] Error while fetching schema: ${e.message}`
@@ -65,13 +48,7 @@ const useSchemaSync = (onSyncChange?: (isSyncing: boolean) => void) => {
 
       if (!schema) return;
       if (!schema?.vertices.length) {
-        notificationId.current && clearNotification(notificationId.current);
-        enqueueNotification({
-          title: config.displayLabel || config.id,
-          message: "This connection has no data available",
-          type: "info",
-          stackable: true,
-        });
+        toast("This connection has no data available")
         connector.logger?.info(
           `[${config.displayLabel || config.id
           }] This connection has no data available: ${JSON.stringify(
@@ -83,13 +60,7 @@ const useSchemaSync = (onSyncChange?: (isSyncing: boolean) => void) => {
       updateSchemaState(config.id, schema);
       onSyncChange?.(false);
 
-      notificationId.current && clearNotification(notificationId.current);
-      enqueueNotification({
-        title: config.displayLabel || config.id,
-        message: "Connection successfully synchronized",
-        type: "success",
-        stackable: true,
-      });
+      toast.success("Connection successfully synchronized")
       connector.logger?.info(
         `[${config.displayLabel || config.id
         }] Connection successfully synchronized: ${JSON.stringify(
@@ -104,16 +75,7 @@ const useSchemaSync = (onSyncChange?: (isSyncing: boolean) => void) => {
       ids.push(...schema.edges.map(e => e.type));
       updatePrefixes(ids);
     },
-    [
-      clearNotification,
-      config,
-      connector.explorer,
-      connector.logger,
-      enqueueNotification,
-      onSyncChange,
-      updatePrefixes,
-      updateSchemaState,
-    ]
+    [config, connector.explorer, connector.logger, onSyncChange, updatePrefixes, updateSchemaState]
   );
 };
 
